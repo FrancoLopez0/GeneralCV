@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from iBase import iBase
 
-class iCam(ABC):
+class iCam(iBase):
+
     @abstractmethod
     def show(self):
         pass

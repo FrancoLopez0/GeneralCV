@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from iBase import iBase
 
-class iFilter(ABC):
+class iFilter(iBase):
+
     @abstractmethod
     def process(self):
         pass

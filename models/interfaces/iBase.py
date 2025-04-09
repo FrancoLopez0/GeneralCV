@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-class iCom(ABC):
+class iBase(ABC):
     @abstractmethod
-    def send(self):
+    def showInfo(self):
         pass
 
     @abstractmethod
-    def recieve(self):
+    def getParameters(self):
         pass
