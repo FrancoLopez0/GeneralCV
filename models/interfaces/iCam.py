@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from iBase import iBase
+from interfaces.iBase import iBase
 
 class iCam(iBase):
 

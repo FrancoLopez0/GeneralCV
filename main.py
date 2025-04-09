@@ -5,6 +5,7 @@
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidgetItem, QVBoxLayout, QLabel, QDialog
 from views.view_main_window import Ui_MainWindow
+from models import Cam
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -12,6 +13,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("GeneralCV")
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)
