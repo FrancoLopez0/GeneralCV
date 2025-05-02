@@ -1,12 +1,23 @@
 from abc import abstractmethod
-from interfaces.iBase import iBase
+from .iBase import iBase
 
 class iCam(iBase):
 
+    """
+        Muestra informacion de la camara
+
+    Returns:
+        str
+    """
     @abstractmethod
     def show(self):
         pass
 
+    """
+        Obtiene un frame de la camara
+    Returns:
+        np.array: Arreglo de datos.
+    """
     @abstractmethod
     def getFrame(self):
         pass

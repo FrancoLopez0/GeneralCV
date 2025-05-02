@@ -1,4 +1,4 @@
-from interfaces.iCam import iCam
+from .interfaces import iCam
 import numpy as np
 import cv2
 
@@ -37,6 +37,7 @@ if __name__ == "__main__":
         frame = cam.getFrame()
         
         cv2.imshow('Camera', frame)
+
         # Exit the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from .iBase import iBase
 
-class iCv(iBase):
+class iScreen(iBase):
 
     @abstractmethod
     def showInfo(self):
@@ -12,9 +12,9 @@ class iCv(iBase):
         pass
 
     @abstractmethod
-    def process(self):
+    def destroyAllWindows(self):
         pass
 
     @abstractmethod
-    def getData(self):
+    def showImage(self):
         pass

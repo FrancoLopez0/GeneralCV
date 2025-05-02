@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from iBase import iBase
+from .iBase import iBase
 
 class iCom(iBase):
 
