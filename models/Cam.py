@@ -3,10 +3,10 @@ import numpy as np
 import cv2
 
 class Cam(iCam):
-    def __init__(self):
+    def __init__(self, camNumber = 0):
         super().__init__()
 
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(camNumber)
     
     def getFrame(self):
 
