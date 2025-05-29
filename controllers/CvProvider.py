@@ -12,6 +12,13 @@ class CvProvider():
     """
     def process(self, frame):
         if self.cv != None:
-            return self.cv.process()
+            return self.cv.process(frame)
         else:
             return False
+    
+    def close(self):
+        if(self.cv!=None):
+            self.cv.close()
+            self.cv = None
+            return
+        return

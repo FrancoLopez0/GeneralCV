@@ -12,9 +12,13 @@ class iCv(iBase):
         pass
 
     @abstractmethod
-    def process(self):
+    def process(self, frame):
         pass
 
     @abstractmethod
     def getData(self):
+        pass
+
+    @abstractmethod
+    def close(self):
         pass

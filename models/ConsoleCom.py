@@ -1,13 +1,28 @@
 from .interfaces import iCom
 
-class ConsoleCom():
+class ConsoleCom(iCom):
     def __init__(self, text=''):
         super().__init__()
         self.text = text
 
     def process(self, cvResponse):
-        if cvResponse:
-            print(cvResponse)
-        else:
+        try:
+            if cvResponse:
+                print(cvResponse)
+            else:
+                return
+        except:
             return
+        
+    def showInfo(self):
+        pass
+    
+    def getParameters(self):
+        pass
+
+    def recieve(self):
+        pass
+
+    def send(self):
+        pass
         
