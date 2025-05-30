@@ -1,5 +1,12 @@
 from .interfaces import iCv
 import mediapipe as mp
+from dataclasses import dataclass
+
+@dataclass
+class Hand:
+    index: int
+    fingers_state: list
+    fingers_coords: dict
 
 class HandsCv(iCv):
     def __init__(self):
@@ -11,6 +18,8 @@ class HandsCv(iCv):
             static_image_mode=False,
             max_num_hands=2,
             min_detection_confidence=0.5)
+        
+        self.main_hand = Hand(0, [0,0,0,0,0], {})
     
     def showInfo(self):
         return super().showInfo()
@@ -21,12 +30,26 @@ class HandsCv(iCv):
     def process(self, frame):
         results = self.hands.process(frame)
         if results.multi_hand_landmarks is not None:
-            for hand_landmarks in results.multi_hand_landmarks:
+
+            # Obtengo la primer mano
+            hand = results.multi_hand_landmarks[0]
+            
+            # Guardo todas las coordenadas de los dedos de la mano principal
+            self.main_hand.fingers_coords = {
+                'thumb':[hand.landmark[self.mp_hands.HandLandmark.THUMB_TIP].x,hand.landmark[self.mp_hands.HandLandmark.THUMB_TIP].y],
+                'index':[hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP].x,hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP].y],
+                'middle':[hand.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x,hand.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y],
+                'ring':[hand.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP].x,hand.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP].y],
+                'pinky':[hand.landmark[self.mp_hands.HandLandmark.PINKY_TIP].x,hand.landmark[self.mp_hands.HandLandmark.PINKY_TIP].y],
+                }
+
+            # Recorro todas las manos
+            for hand_landmarks in results.multi_hand_landmarks: 
                 self.mp_drawing.draw_landmarks(
                     frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS,
-                    self.mp_drawing.DrawingSpec(color=(0,0,255), thickness=3, circle_radius=3),
-                    self.mp_drawing.DrawingSpec(color=(0,255,0), thickness=3, circle_radius=3))
-        return frame
+                    self.mp_drawing.DrawingSpec(color=(0,0,255), thickness=1, circle_radius=1),
+                    self.mp_drawing.DrawingSpec(color=(0,255,0), thickness=1, circle_radius=1))   
+        return frame, self.main_hand
     
     def close(self):
         self.hands.close()

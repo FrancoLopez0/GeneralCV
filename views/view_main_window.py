@@ -220,6 +220,7 @@ class Ui_MainWindow(object):
 
         self.cam = QLabel(self.frame_6)
         self.cam.setObjectName(u"cam")
+        self.cam.setMaximumSize(QSize(640, 480))
 
         self.gridLayout.addWidget(self.cam, 1, 0, 1, 1)
 
@@ -246,7 +247,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Select CAM", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
+        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"osjdasdoij", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
         self.toolButton_2.setText(QCoreApplication.translate("MainWindow", u"...", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Load Filter", None))

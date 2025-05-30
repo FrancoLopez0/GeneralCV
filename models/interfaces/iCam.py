@@ -10,7 +10,7 @@ class iCam(iBase):
         str
     """
     @abstractmethod
-    def show(self):
+    def show(self, frame):
         pass
 
     """
