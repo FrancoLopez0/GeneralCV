@@ -14,10 +14,21 @@ class HandsCv(iCv):
 
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_hands = mp.solutions.hands
+
+        self.fingers_tip_index = [
+                              self.mp_hands.HandLandmark.THUMB_TIP,
+                              self.mp_hands.HandLandmark.INDEX_FINGER_TIP,
+                              self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP,
+                              self.mp_hands.HandLandmark.RING_FINGER_TIP,
+                              self.mp_hands.HandLandmark.PINKY_TIP
+                              ]
+        
+        self.fingers_base_index = [2, 5, 9, 13, 17]
+
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
             max_num_hands=2,
-            min_detection_confidence=0.5)
+            min_detection_confidence=0.7)
         
         self.main_hand = Hand(0, [0,0,0,0,0], {})
     
@@ -49,6 +60,11 @@ class HandsCv(iCv):
                     frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS,
                     self.mp_drawing.DrawingSpec(color=(0,0,255), thickness=1, circle_radius=1),
                     self.mp_drawing.DrawingSpec(color=(0,255,0), thickness=1, circle_radius=1))   
+            
+            if(hand.landmark[0].y>hand.landmark[self.fingers_tip_index[1]].y):
+                self.main_hand.fingers_state = [hand.landmark[finger_tip].y<hand.landmark[finger_base].y for finger_tip, finger_base in zip(self.fingers_tip_index, self.fingers_base_index)]
+            else:
+                self.main_hand.fingers_state = [None for finger in self.main_hand.fingers_state]
         return frame, self.main_hand
     
     def close(self):

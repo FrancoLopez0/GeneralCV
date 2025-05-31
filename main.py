@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidgetIt
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QImage, QPixmap
 from views.view_main_window import Ui_MainWindow
-from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen
+from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
 import cv2
 
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
 
         self.ui.setupUi(self)
 
-        self.ui.cbSelectModel.addItems(['None','Hand'])
+        self.ui.cbSelectModel.addItems(['None','Hand', 'Hand Tracking'])
         self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
 
         #=======================CONTROLLERS=================================================================
@@ -63,6 +63,9 @@ class MainWindow(QMainWindow):
 
         if(value=='Hand'):
             self.cvProvider.setCv(HandsCv())
+        
+        if(value=='Hand Tracking'):
+            self.cvProvider.setCv(HandTrackingCv())
 
         print(value)
     
@@ -79,14 +82,17 @@ class MainWindow(QMainWindow):
         
         frameToCvProcess = self.inputFilterProvider.process(frame)  # Aplico un filtro a mi frame para luego procesarlo
         
-        frame,cvResponse = self.cvProvider.process(frameToCvProcess)      # Proceso el frame
+        frame,cvResponse = self.cvProvider.process(frameToCvProcess)# Proceso el frame
         
-        self.comProvider.process(frame)                        # Comunico la respuesta a un periferico externo
+        self.comProvider.process(frame)                             # Comunico la respuesta a un periferico externo
         
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         frame = self.outputFilterProvider.process(frame)            # Aplico un filtro a mi frame para luego mostrarlo en pantalla
 
         self.screenProvider.showFrame(frame)
+
+        print(cvResponse)
     
     def close(self):
         self.cvProvider.close()  
