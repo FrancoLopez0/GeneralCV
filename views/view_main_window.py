@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(800, 620)
+        MainWindow.resize(800, 693)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_5 = QVBoxLayout(self.centralwidget)
@@ -89,29 +89,20 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.label_2)
 
-        self.comboBox_2 = QComboBox(self.frame_2)
-        self.comboBox_2.setObjectName(u"comboBox_2")
+        self.cbSelectInputFilter = QComboBox(self.frame_2)
+        self.cbSelectInputFilter.setObjectName(u"cbSelectInputFilter")
 
-        self.verticalLayout_2.addWidget(self.comboBox_2)
+        self.verticalLayout_2.addWidget(self.cbSelectInputFilter)
 
-        self.frame_8 = QFrame(self.frame_2)
-        self.frame_8.setObjectName(u"frame_8")
-        self.frame_8.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame_8.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_3 = QHBoxLayout(self.frame_8)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.pushButton_2 = QPushButton(self.frame_8)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.label_5 = QLabel(self.frame_2)
+        self.label_5.setObjectName(u"label_5")
 
-        self.horizontalLayout_3.addWidget(self.pushButton_2)
+        self.verticalLayout_2.addWidget(self.label_5)
 
-        self.toolButton = QToolButton(self.frame_8)
-        self.toolButton.setObjectName(u"toolButton")
+        self.cbSelectOuputFilter = QComboBox(self.frame_2)
+        self.cbSelectOuputFilter.setObjectName(u"cbSelectOuputFilter")
 
-        self.horizontalLayout_3.addWidget(self.toolButton)
-
-
-        self.verticalLayout_2.addWidget(self.frame_8)
+        self.verticalLayout_2.addWidget(self.cbSelectOuputFilter)
 
 
         self.horizontalLayout_2.addWidget(self.frame_2)
@@ -208,7 +199,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.parameters = QTabWidget(self.frame_6)
         self.parameters.setObjectName(u"parameters")
-        self.parameters.setMaximumSize(QSize(200, 1000))
+        self.parameters.setMaximumSize(QSize(1000, 1000))
         self.camTab = QWidget()
         self.camTab.setObjectName(u"camTab")
         self.parameters.addTab(self.camTab, "")
@@ -216,13 +207,18 @@ class Ui_MainWindow(object):
         self.filterTab.setObjectName(u"filterTab")
         self.parameters.addTab(self.filterTab, "")
 
-        self.gridLayout.addWidget(self.parameters, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.parameters, 2, 0, 1, 1)
+
+        self.verticalLayout_8 = QVBoxLayout()
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+
+        self.gridLayout.addLayout(self.verticalLayout_8, 3, 0, 1, 1)
 
         self.cam = QLabel(self.frame_6)
         self.cam.setObjectName(u"cam")
-        self.cam.setMaximumSize(QSize(640, 480))
+        self.cam.setMaximumSize(QSize(1000, 1000))
 
-        self.gridLayout.addWidget(self.cam, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.cam, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.verticalLayout_5.addWidget(self.frame_6)
@@ -247,12 +243,11 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Select CAM", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"osjdasdoij", None))
+        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
         self.toolButton_2.setText(QCoreApplication.translate("MainWindow", u"...", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Load Filter", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Enable", None))
-        self.toolButton.setText(QCoreApplication.translate("MainWindow", u"...", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Input Filter", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Output Filter", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Load CV Model", None))
         self.enableCv.setText(QCoreApplication.translate("MainWindow", u"Enable", None))
         self.toolButton_4.setText(QCoreApplication.translate("MainWindow", u"...", None))

@@ -1,24 +1,25 @@
 from models.interfaces import iCv
+from controllers import BaseProvider
 
-class CvProvider():
+class CvProvider(BaseProvider.BaseProvider):
     def __init__(self):
-        self.cv:iCv = None
-    
+        super().__init__()
+
     def setCv(self, cv:iCv):
-        self.cv = cv
+        self.model = cv
 
     """
     Retorna la informacion obtenida
     """
     def process(self, frame):
-        if self.cv != None:
-            return self.cv.process(frame)
+        if self.model != None:
+            return self.model.process(frame)
         else:
             return frame, False
     
     def close(self):
-        if(self.cv!=None):
-            self.cv.close()
-            self.cv = None
+        if(self.model!=None):
+            self.model.close()
+            self.model = None
             return
         return

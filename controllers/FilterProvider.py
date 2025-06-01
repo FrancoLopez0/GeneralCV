@@ -1,14 +1,15 @@
 from models.interfaces import iFilter
+from controllers import BaseProvider
 
-class FilterProvider():
+class FilterProvider(BaseProvider.BaseProvider):
     def __init__(self):
-        self.filter: iFilter = None
+        super().__init__()
 
     def setFilter(self, filter):
-        self.filter = filter
+        self.model = filter
     
     def process(self, frame):
-        if self.filter != None:
-            return self.filter.process(frame)
+        if self.model != None:
+            return self.model.process(frame)
         else:
             return frame
