@@ -1,6 +1,7 @@
 from .interfaces import iCv
 import mediapipe as mp
 from dataclasses import dataclass
+from .decorators import add_param
 
 @dataclass
 class Hand:
@@ -28,7 +29,7 @@ class HandsCv(iCv):
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
             max_num_hands=2,
-            min_detection_confidence=0.7)
+            min_detection_confidence=0.8)
         
         self.main_hand = Hand(0, [0,0,0,0,0], {})
     
@@ -67,6 +68,10 @@ class HandsCv(iCv):
                 self.main_hand.fingers_state = [None for finger in self.main_hand.fingers_state]
         return frame, self.main_hand
     
+    @add_param
+    def printStates(self):
+        print(self.main_hand.fingers_state)
+
     def close(self):
         self.hands.close()
         return super().close()

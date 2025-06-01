@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>620</height>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@
              <item>
               <widget class="QPushButton" name="pushButton">
                <property name="text">
-                <string>osjdasdoij</string>
+                <string>Connect</string>
                </property>
               </widget>
              </item>
@@ -91,38 +91,22 @@
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Load Filter</string>
+             <string>Input Filter</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox_2"/>
+           <widget class="QComboBox" name="cbSelectInputFilter"/>
           </item>
           <item>
-           <widget class="QFrame" name="frame_8">
-            <property name="frameShape">
-             <enum>QFrame::Shape::StyledPanel</enum>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Output Filter</string>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QPushButton" name="pushButton_2">
-               <property name="text">
-                <string>Enable</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="toolButton">
-               <property name="text">
-                <string>...</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
            </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbSelectOuputFilter"/>
           </item>
          </layout>
         </widget>
@@ -242,11 +226,11 @@
        <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="1">
+       <item row="2" column="0">
         <widget class="QTabWidget" name="parameters">
          <property name="maximumSize">
           <size>
-           <width>200</width>
+           <width>1000</width>
            <height>1000</height>
           </size>
          </property>
@@ -265,12 +249,15 @@
          </widget>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="3" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_8"/>
+       </item>
+       <item row="1" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
         <widget class="QLabel" name="cam">
          <property name="maximumSize">
           <size>
-           <width>640</width>
-           <height>480</height>
+           <width>1000</width>
+           <height>1000</height>
           </size>
          </property>
          <property name="text">

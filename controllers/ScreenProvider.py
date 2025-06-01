@@ -19,3 +19,7 @@ class ScreenProvider():
         if self.screen != None:
             self.screen.showImage(frame)
         return
+    
+    def updateTabs(self, methods, tab):
+        if(methods != None):
+            self.screen.updateTabs(methods, tab)

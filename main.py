@@ -4,13 +4,76 @@
 # pyside6-uic .\ui_files\mainwindow.ui -o .\views\view_main_window.py
 # pyside6-designer .\ui_files\mainwindow.ui      
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidgetItem, QVBoxLayout, QLabel, QDialog
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QImage, QPixmap
 from views.view_main_window import Ui_MainWindow
-from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv
+from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv, CannyFilter
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
 import cv2
+
+class MyCustomTab(QWidget):
+    def __init__(self, methods, name):
+        super().__init__()
+        
+        h = 25
+
+        layout = QHBoxLayout()
+
+        layout.addWidget(QLabel(name), alignment=Qt.AlignCenter)
+
+        for method in methods:
+            params = [param for param in methods[method]['parametros']]
+            inputs = {}
+            func_layout = QVBoxLayout()
+            for param, param_type in methods[method]['parametros'].items():
+                param_layout = QHBoxLayout()
+
+                label = QLabel(param)
+
+                label.setFixedHeight(h)
+
+                param_layout.addWidget(label, alignment=Qt.AlignCenter)
+
+                if(param_type == str):
+                    var_widget=QLineEdit(param)
+                if(param_type == float):
+                    var_widget = QDoubleSpinBox(maximum=1000)
+                if(param_type == int):
+                    var_widget = QSpinBox(maximum=1000)
+                inputs[param] = var_widget
+
+                param_layout.addWidget(var_widget, alignment=Qt.AlignCenter)
+
+                func_layout.addLayout(param_layout)
+            
+            layout.addLayout(func_layout)
+
+            btn = QPushButton(method)
+
+            btn.setFixedHeight(h)
+
+            fun = self.make_callback(methods[method]['funcion'], inputs)
+
+            btn.clicked.connect(fun)
+
+            layout.addWidget(btn, alignment=Qt.AlignCenter)   
+        
+        layout.addStretch()         
+
+        self.setLayout(layout)
+
+    
+    def make_callback(self, func, inputs):
+        def callback():
+            args = {}
+            for k, widget in inputs.items():
+                if isinstance(widget, QLineEdit):
+                    args[k] = widget.text()
+                else:
+                    args[k] = widget.value()
+            func(**args)
+        return callback
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -21,8 +84,33 @@ class MainWindow(QMainWindow):
 
         self.ui.setupUi(self)
 
+        self.ui.parameters.removeTab(0)
+        self.ui.parameters.removeTab(1)
+        self.ui.parameters.removeTab(2)
+
+        self.camWidget = QWidget()
+        self.cvWidget = QWidget()
+        self.iFilterWidget = QWidget()
+        self.oFilterWidget = QWidget()
+        self.comWidget = QWidget()
+
+        self.ui.parameters.addTab(self.camWidget, 'CAM')
+        self.ui.parameters.addTab(self.iFilterWidget, 'IFilter')
+        self.ui.parameters.addTab(self.cvWidget, 'CV')
+        self.ui.parameters.addTab(self.oFilterWidget, 'OFilter')
+        self.ui.parameters.addTab(self.comWidget, 'COM')
+
+        self.ui.parameters.removeTab(0)
+
+
         self.ui.cbSelectModel.addItems(['None','Hand', 'Hand Tracking'])
         self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
+
+        self.ui.cbSelectOuputFilter.addItems(['None', 'Border'])
+        self.ui.cbSelectOuputFilter.currentTextChanged.connect(self.select_output_filter_model)
+
+        self.ui.cbSelectInputFilter.addItems(['None', 'Border'])
+        self.ui.cbSelectInputFilter.currentTextChanged.connect(self.select_input_filter_model)
 
         #=======================CONTROLLERS=================================================================
 
@@ -57,6 +145,29 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
+    def select_input_filter_model(self, value):
+        if(value == 'None'):
+            self.inputFilterProvider.setFilter(BypassFilter())
+        if(value=='Border'):
+            self.inputFilterProvider.setFilter(CannyFilter())
+        
+        methods = self.outputFilterProvider.getMethods()
+        self.update_tab(1, value, methods, 'OFilter')
+        
+        print(value)
+
+    def select_output_filter_model(self, value):
+
+        if(value == 'None'):
+            self.outputFilterProvider.setFilter(BypassFilter())
+        if(value=='Border'):
+            self.outputFilterProvider.setFilter(CannyFilter())
+        
+        methods = self.outputFilterProvider.getMethods()
+        self.update_tab(3, value, methods, 'OFilter')
+
+        print(value)
+
     def select_cv_model(self, value):
         
         self.cvProvider.close()
@@ -67,8 +178,18 @@ class MainWindow(QMainWindow):
         if(value=='Hand Tracking'):
             self.cvProvider.setCv(HandTrackingCv())
 
-        print(value)
-    
+        print(f'Modelo seleccionado: {value}')
+
+        methods = self.cvProvider.getMethods()
+
+        self.update_tab(2, value, methods, 'CV')
+
+
+    def update_tab(self, index, name, methods, tab_name):
+        tab = MyCustomTab(methods, name)
+        self.ui.parameters.removeTab(index)
+        self.ui.parameters.insertTab(index,tab, tab_name)
+
     def show_on_qt(self, frame):
         h, w, ch = frame.shape
         bytes_per_line = ch * w
@@ -91,8 +212,6 @@ class MainWindow(QMainWindow):
         frame = self.outputFilterProvider.process(frame)            # Aplico un filtro a mi frame para luego mostrarlo en pantalla
 
         self.screenProvider.showFrame(frame)
-
-        print(cvResponse)
     
     def close(self):
         self.cvProvider.close()  

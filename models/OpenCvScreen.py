@@ -5,6 +5,8 @@ class OpenCvScreen(iScreen):
     def __init__(self):
         super().__init__()
 
+    def updateTabs(self, methods, tab):
+        return super().updateTabs(methods, tab)
 
     def showInfo(self):
         return

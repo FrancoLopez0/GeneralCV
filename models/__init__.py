@@ -5,3 +5,4 @@ from .ConsoleCom import ConsoleCom
 from .HandsCv import HandsCv
 from .QtScreen import QtScreen
 from .HandTrackingCv import HandTrackingCv
+from .CannyFilter import CannyFilter

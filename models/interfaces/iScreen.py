@@ -18,3 +18,7 @@ class iScreen(iBase):
     @abstractmethod
     def showImage(self):
         pass
+
+    @abstractmethod
+    def updateTabs(self, methods, tab):
+        pass
