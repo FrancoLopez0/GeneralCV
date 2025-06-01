@@ -12,5 +12,6 @@ Se pueden modificar los parametros en tiempo real a traves del decorador @add_pa
 ![image](https://github.com/user-attachments/assets/357c7317-fde2-4e5d-8931-0a82a3cfada4)
 ![image](https://github.com/user-attachments/assets/3c0a807f-96ec-4b8c-bcec-44a464685066)
 
-
-
+============================================================================================
+Este proyecto utiliza Qt (PySide6) bajo licencia LGPL v3 para la interfaz gráfica de usuario.
+Para más información sobre la licencia, ver: https://doc.qt.io/qtforpython/licenses.html
