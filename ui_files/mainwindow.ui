@@ -55,7 +55,7 @@
              <item>
               <widget class="QPushButton" name="pushButton">
                <property name="text">
-                <string>Connect</string>
+                <string>osjdasdoij</string>
                </property>
               </widget>
              </item>
@@ -267,6 +267,12 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="cam">
+         <property name="maximumSize">
+          <size>
+           <width>640</width>
+           <height>480</height>
+          </size>
+         </property>
          <property name="text">
           <string>CAM</string>
          </property>

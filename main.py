@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidgetIt
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QImage, QPixmap
 from views.view_main_window import Ui_MainWindow
-from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv
+from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
 import cv2
 
@@ -16,6 +16,14 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("GeneralCV")
+
+        self.ui = Ui_MainWindow()
+
+        self.ui.setupUi(self)
+
+        self.ui.cbSelectModel.addItems(['None','Hand', 'Hand Tracking'])
+        self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
+
         #=======================CONTROLLERS=================================================================
 
         self.camProvider = CamProvider()              # Inicializo el proevedor que controlara la camara
@@ -27,12 +35,13 @@ class MainWindow(QMainWindow):
 
         #=======================MODELOS=====================================================================
 
-        cam = Cam()                              # Instancio el tipo de camara que voy a usar
-        # self.screen = OpenCvScreen()           # Instancio el tipo de ventana donde voy a mostrar la salida
-        cvModel = None                           # Instancio el modelo de CV
-        inputFilter = BypassFilter()             # Instancio el filtro que tendra la entrada
-        outputFilter = BypassFilter()            # Instancio el filtro que tendra la salida [lo que se mostrara en el screen]
+        cam = Cam()                                   # Instancio el tipo de camara que voy a usar
+        # self.screen = OpenCvScreen()                # Instancio el tipo de ventana donde voy a mostrar la salida
+        cvModel = None                                # Instancio el modelo de CV
+        inputFilter = BypassFilter()                  # Instancio el filtro que tendra la entrada
+        outputFilter = BypassFilter()                 # Instancio el filtro que tendra la salida [lo que se mostrara en el screen]
         comModel = ConsoleCom()
+        screen = QtScreen(self.ui.cam)                  # Instancio el tipo de ventana donde voy a mostrar la salida
 
         #=======================SELECCION DE MODELOS========================================================
 
@@ -40,7 +49,7 @@ class MainWindow(QMainWindow):
         self.cvProvider.setCv(cvModel)                # Seteo el modelo de vision por computadora a usar
         self.inputFilterProvider.setFilter(inputFilter)    
         self.outputFilterProvider.setFilter(outputFilter)
-        # self.screenProvider.setScreen(self.screen)       # Seteo la pantalla en donde voy a mostrar los frames
+        self.screenProvider.setScreen(screen)         # Seteo la pantalla en donde voy a mostrar los frames
         self.comProvider.setCom(comModel)             # Seteo el dispositivo de comunicacion que voy a usar
 
         # Timer para actualizar el frame cada 30 ms
@@ -48,38 +57,42 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
-        self.ui = Ui_MainWindow()
-
-        self.ui.setupUi(self)
-
-        self.ui.cbSelectModel.addItems(['None','Hand'])
-        self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
-
     def select_cv_model(self, value):
         
         self.cvProvider.close()
 
         if(value=='Hand'):
             self.cvProvider.setCv(HandsCv())
+        
+        if(value=='Hand Tracking'):
+            self.cvProvider.setCv(HandTrackingCv())
 
         print(value)
-
-    def update_frame(self):
-        
-        frame = self.camProvider.getFrame()                         # Tomo un frame
-        frameToCvProcess = self.inputFilterProvider.process(frame)  # Aplico un filtro a mi frame para luego procesarlo
-        cvResponse = self.cvProvider.process(frameToCvProcess)      # Proceso el frame
-        self.comProvider.process(cvResponse)                        # Comunico la respuesta a un periferico externo
-        
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = self.outputFilterProvider.process(frame)            # Aplico un filtro a mi frame para luego mostrarlo en pantalla
-        # self.screenProvider.showFrame(cvResponse)                 # Lo muestro en mi pantalla
-        # Convertir el frame a QImage
+    
+    def show_on_qt(self, frame):
         h, w, ch = frame.shape
         bytes_per_line = ch * w
         q_image = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
         # Mostrar la imagen en el QLabel
         self.ui.cam.setPixmap(QPixmap.fromImage(q_image))
+
+    def update_frame(self):
+        
+        frame = self.camProvider.getFrame()                         # Tomo un frame
+        
+        frameToCvProcess = self.inputFilterProvider.process(frame)  # Aplico un filtro a mi frame para luego procesarlo
+        
+        frame,cvResponse = self.cvProvider.process(frameToCvProcess)# Proceso el frame
+        
+        self.comProvider.process(frame)                             # Comunico la respuesta a un periferico externo
+        
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        frame = self.outputFilterProvider.process(frame)            # Aplico un filtro a mi frame para luego mostrarlo en pantalla
+
+        self.screenProvider.showFrame(frame)
+
+        print(cvResponse)
     
     def close(self):
         self.cvProvider.close()  

@@ -14,7 +14,7 @@ class CvProvider():
         if self.cv != None:
             return self.cv.process(frame)
         else:
-            return False
+            return frame, False
     
     def close(self):
         if(self.cv!=None):
