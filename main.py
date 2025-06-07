@@ -10,6 +10,7 @@ from PySide6.QtGui import QImage, QPixmap
 from views.view_main_window import Ui_MainWindow
 from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv, CannyFilter
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
+import cv2_enumerate_cameras 
 import cv2
 
 class MyCustomTab(QWidget):
@@ -63,7 +64,6 @@ class MyCustomTab(QWidget):
 
         self.setLayout(layout)
 
-    
     def make_callback(self, func, inputs):
         def callback():
             args = {}
@@ -102,15 +102,20 @@ class MainWindow(QMainWindow):
 
         self.ui.parameters.removeTab(0)
 
-
         self.ui.cbSelectModel.addItems(['None','Hand', 'Hand Tracking'])
         self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
 
-        self.ui.cbSelectOuputFilter.addItems(['None', 'Border'])
+        self.ui.cbSelectOuputFilter.addItems(['None', 'Canny'])
         self.ui.cbSelectOuputFilter.currentTextChanged.connect(self.select_output_filter_model)
 
-        self.ui.cbSelectInputFilter.addItems(['None', 'Border'])
+        self.ui.cbSelectInputFilter.addItems(['None', 'Canny'])
         self.ui.cbSelectInputFilter.currentTextChanged.connect(self.select_input_filter_model)
+
+        self.ui.cbSelectCam.currentTextChanged.connect(self.select_cam)
+
+        self.ui.btnScan.clicked.connect(self.list_cameras)
+
+        self.list_cameras()
 
         #=======================CONTROLLERS=================================================================
 
@@ -145,22 +150,42 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
+    def list_cameras(self):  
+        cameras = cv2_enumerate_cameras.enumerate_cameras()
+        list_cameras = []
+
+        # LISTA LAS CAMARAS DEL SISTEMA
+        for camera in cameras:
+            if camera.index < 1400:
+                print(camera.name)
+                list_cameras.append(camera.name)
+                
+        self.ui.cbSelectCam.clear()
+        self.ui.cbSelectCam.addItems(list_cameras)
+
     def select_input_filter_model(self, value):
         if(value == 'None'):
             self.inputFilterProvider.setFilter(BypassFilter())
-        if(value=='Border'):
+        if(value=='Canny'):
             self.inputFilterProvider.setFilter(CannyFilter())
         
         methods = self.outputFilterProvider.getMethods()
-        self.update_tab(1, value, methods, 'OFilter')
+        self.update_tab(1, value, methods, 'iFilter')
         
         print(value)
+
+    def select_cam(self):
+        index = self.ui.cbSelectCam.currentIndex()
+        self.camProvider.realease()
+        self.camProvider.setCam(Cam(index))
+        methods = self.camProvider.getMethods()
+        self.update_tab(0, '', methods, 'CAM')
 
     def select_output_filter_model(self, value):
 
         if(value == 'None'):
             self.outputFilterProvider.setFilter(BypassFilter())
-        if(value=='Border'):
+        if(value=='Canny'):
             self.outputFilterProvider.setFilter(CannyFilter())
         
         methods = self.outputFilterProvider.getMethods()

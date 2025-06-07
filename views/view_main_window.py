@@ -46,10 +46,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.label)
 
-        self.comboBox = QComboBox(self.frame)
-        self.comboBox.setObjectName(u"comboBox")
+        self.cbSelectCam = QComboBox(self.frame)
+        self.cbSelectCam.setObjectName(u"cbSelectCam")
 
-        self.verticalLayout.addWidget(self.comboBox)
+        self.verticalLayout.addWidget(self.cbSelectCam)
 
         self.frame_7 = QFrame(self.frame)
         self.frame_7.setObjectName(u"frame_7")
@@ -57,15 +57,15 @@ class Ui_MainWindow(object):
         self.frame_7.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout = QHBoxLayout(self.frame_7)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.pushButton = QPushButton(self.frame_7)
-        self.pushButton.setObjectName(u"pushButton")
+        self.btnConnect = QPushButton(self.frame_7)
+        self.btnConnect.setObjectName(u"btnConnect")
 
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.horizontalLayout.addWidget(self.btnConnect)
 
-        self.pushButton_5 = QPushButton(self.frame_7)
-        self.pushButton_5.setObjectName(u"pushButton_5")
+        self.btnScan = QPushButton(self.frame_7)
+        self.btnScan.setObjectName(u"btnScan")
 
-        self.horizontalLayout.addWidget(self.pushButton_5)
+        self.horizontalLayout.addWidget(self.btnScan)
 
         self.toolButton_2 = QToolButton(self.frame_7)
         self.toolButton_2.setObjectName(u"toolButton_2")
@@ -220,6 +220,17 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.cam, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
+        self.label_6 = QLabel(self.frame_6)
+        self.label_6.setObjectName(u"label_6")
+        font = QFont()
+        font.setFamilies([u"DejaVu Sans Mono"])
+        font.setPointSize(12)
+        self.label_6.setFont(font)
+        self.label_6.setMouseTracking(False)
+        self.label_6.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.gridLayout.addWidget(self.label_6, 0, 0, 1, 1)
+
 
         self.verticalLayout_5.addWidget(self.frame_6)
 
@@ -243,8 +254,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Select CAM", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
-        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
+        self.btnConnect.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
+        self.btnScan.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
         self.toolButton_2.setText(QCoreApplication.translate("MainWindow", u"...", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Input Filter", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Output Filter", None))
@@ -258,5 +269,6 @@ class Ui_MainWindow(object):
         self.parameters.setTabText(self.parameters.indexOf(self.camTab), QCoreApplication.translate("MainWindow", u"Tab 1", None))
         self.parameters.setTabText(self.parameters.indexOf(self.filterTab), QCoreApplication.translate("MainWindow", u"Tab 2", None))
         self.cam.setText(QCoreApplication.translate("MainWindow", u"CAM", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"LABORATORIO DE ROBOTICA UTN FRA", None))
     # retranslateUi
 
