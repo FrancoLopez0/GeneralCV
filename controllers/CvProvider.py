@@ -12,7 +12,7 @@ class CvProvider(BaseProvider.BaseProvider):
     Retorna la informacion obtenida
     """
     def process(self, frame):
-        if self.model != None:
+        if self.model != None and self.isActive:
             return self.model.process(frame)
         else:
             return frame, False

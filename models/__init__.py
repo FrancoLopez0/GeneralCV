@@ -6,3 +6,4 @@ from .HandsCv import HandsCv
 from .QtScreen import QtScreen
 from .HandTrackingCv import HandTrackingCv
 from .CannyFilter import CannyFilter
+from .SerialCom import SerialCom

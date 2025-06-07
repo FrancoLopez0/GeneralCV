@@ -4,17 +4,18 @@
 # pyside6-uic .\ui_files\mainwindow.ui -o .\views\view_main_window.py
 # pyside6-designer .\ui_files\mainwindow.ui      
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout, QComboBox
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QImage, QPixmap
 from views.view_main_window import Ui_MainWindow
-from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv, CannyFilter
+from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv, CannyFilter, SerialCom
+from models.types import ComboInputType
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
 import cv2_enumerate_cameras 
 import cv2
 
 class MyCustomTab(QWidget):
-    def __init__(self, methods, name):
+    def __init__(self, methods, name, **kwargs):
         super().__init__()
         
         h = 25
@@ -42,6 +43,9 @@ class MyCustomTab(QWidget):
                     var_widget = QDoubleSpinBox(maximum=1000)
                 if(param_type == int):
                     var_widget = QSpinBox(maximum=1000)
+                if(param_type == ComboInputType):
+                    var_widget = QComboBox()
+                    var_widget.addItems(kwargs.get('combo_items'))
                 inputs[param] = var_widget
 
                 param_layout.addWidget(var_widget, alignment=Qt.AlignCenter)
@@ -70,6 +74,8 @@ class MyCustomTab(QWidget):
             for k, widget in inputs.items():
                 if isinstance(widget, QLineEdit):
                     args[k] = widget.text()
+                if isinstance(widget, QComboBox):
+                    args[k] = widget.currentText()
                 else:
                     args[k] = widget.value()
             func(**args)
@@ -113,6 +119,9 @@ class MainWindow(QMainWindow):
 
         self.ui.cbSelectCam.currentTextChanged.connect(self.select_cam)
 
+        self.ui.cbSelectCom.addItems(['None', 'Serial'])
+        self.ui.cbSelectCom.currentTextChanged.connect(self.select_com)
+
         self.ui.btnScan.clicked.connect(self.list_cameras)
 
         self.list_cameras()
@@ -134,12 +143,13 @@ class MainWindow(QMainWindow):
         inputFilter = BypassFilter()                  # Instancio el filtro que tendra la entrada
         outputFilter = BypassFilter()                 # Instancio el filtro que tendra la salida [lo que se mostrara en el screen]
         comModel = ConsoleCom()
-        screen = QtScreen(self.ui.cam)                  # Instancio el tipo de ventana donde voy a mostrar la salida
+        screen = QtScreen(self.ui.cam)                # Instancio el tipo de ventana donde voy a mostrar la salida
 
         #=======================SELECCION DE MODELOS========================================================
 
         self.camProvider.setCam(cam)                  # Seteo la camara que voy a usar
         self.cvProvider.setCv(cvModel)                # Seteo el modelo de vision por computadora a usar
+        self.ui.enableCv.clicked.connect(self.enable_cv)
         self.inputFilterProvider.setFilter(inputFilter)    
         self.outputFilterProvider.setFilter(outputFilter)
         self.screenProvider.setScreen(screen)         # Seteo la pantalla en donde voy a mostrar los frames
@@ -150,6 +160,10 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
+    def enable_cv(self):
+        self.cvProvider.toggleActive()
+        self.ui.enableCv.setText('Disable' if self.cvProvider.isActive else 'Enable')
+
     def list_cameras(self):  
         cameras = cv2_enumerate_cameras.enumerate_cameras()
         list_cameras = []
@@ -159,7 +173,7 @@ class MainWindow(QMainWindow):
             if camera.index < 1400:
                 print(camera.name)
                 list_cameras.append(camera.name)
-                
+
         self.ui.cbSelectCam.clear()
         self.ui.cbSelectCam.addItems(list_cameras)
 
@@ -169,10 +183,21 @@ class MainWindow(QMainWindow):
         if(value=='Canny'):
             self.inputFilterProvider.setFilter(CannyFilter())
         
-        methods = self.outputFilterProvider.getMethods()
+        methods = self.inputFilterProvider.getMethods()
         self.update_tab(1, value, methods, 'iFilter')
         
         print(value)
+
+    def select_com(self, value):
+        
+        if(value=='Serial'):
+            self.comProvider.setCom(SerialCom())
+        
+        ports = self.comProvider.scan()
+
+        methods = self.comProvider.getMethods()
+        self.update_tab(4, value, methods, 'COM', combo_items=ports)
+        print(methods)
 
     def select_cam(self):
         index = self.ui.cbSelectCam.currentIndex()
@@ -210,8 +235,8 @@ class MainWindow(QMainWindow):
         self.update_tab(2, value, methods, 'CV')
 
 
-    def update_tab(self, index, name, methods, tab_name):
-        tab = MyCustomTab(methods, name)
+    def update_tab(self, index, name, methods, tab_name, **kwargs):
+        tab = MyCustomTab(methods, name, **kwargs)
         self.ui.parameters.removeTab(index)
         self.ui.parameters.insertTab(index,tab, tab_name)
 
@@ -230,7 +255,7 @@ class MainWindow(QMainWindow):
         
         frame,cvResponse = self.cvProvider.process(frameToCvProcess)# Proceso el frame
         
-        self.comProvider.process(frame)                             # Comunico la respuesta a un periferico externo
+        # self.comProvider.process(frame)                             # Comunico la respuesta a un periferico externo
         
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 

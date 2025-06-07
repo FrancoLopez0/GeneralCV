@@ -3,9 +3,13 @@ import inspect
 class BaseProvider():
     def __init__(self):
         self.model = None
+        self.isActive = True
 
     def getModel(self):
         return self.model
+    
+    def toggleActive(self):
+        self.isActive = not self.isActive
 
     def getMethods(self):
         if(self.model != None):

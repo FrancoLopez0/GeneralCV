@@ -4,7 +4,7 @@ import numpy as np
 
 class CamProvider(BaseProvider.BaseProvider):
     def __init__(self):
-        
+        super().__init__()
         self.model = None
 
         pass
@@ -16,7 +16,7 @@ class CamProvider(BaseProvider.BaseProvider):
         pass
 
     def getFrame(self):
-        if self.model != None:
+        if self.model != None and self.isActive:
             return self.model.getFrame()
         else: 
             return ValueError

@@ -156,10 +156,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.label_4)
 
-        self.comboBox_4 = QComboBox(self.frame_4)
-        self.comboBox_4.setObjectName(u"comboBox_4")
+        self.cbSelectCom = QComboBox(self.frame_4)
+        self.cbSelectCom.setObjectName(u"cbSelectCom")
 
-        self.verticalLayout_4.addWidget(self.comboBox_4)
+        self.verticalLayout_4.addWidget(self.cbSelectCom)
 
         self.frame_9 = QFrame(self.frame_4)
         self.frame_9.setObjectName(u"frame_9")
@@ -167,15 +167,15 @@ class Ui_MainWindow(object):
         self.frame_9.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.frame_9)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.pushButton_3 = QPushButton(self.frame_9)
-        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.btnConnectCom = QPushButton(self.frame_9)
+        self.btnConnectCom.setObjectName(u"btnConnectCom")
 
-        self.horizontalLayout_4.addWidget(self.pushButton_3)
+        self.horizontalLayout_4.addWidget(self.btnConnectCom)
 
-        self.pushButton_4 = QPushButton(self.frame_9)
-        self.pushButton_4.setObjectName(u"pushButton_4")
+        self.btnScanCom = QPushButton(self.frame_9)
+        self.btnScanCom.setObjectName(u"btnScanCom")
 
-        self.horizontalLayout_4.addWidget(self.pushButton_4)
+        self.horizontalLayout_4.addWidget(self.btnScanCom)
 
         self.toolButton_3 = QToolButton(self.frame_9)
         self.toolButton_3.setObjectName(u"toolButton_3")
@@ -197,6 +197,12 @@ class Ui_MainWindow(object):
         self.frame_6.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout = QGridLayout(self.frame_6)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.cam = QLabel(self.frame_6)
+        self.cam.setObjectName(u"cam")
+        self.cam.setMaximumSize(QSize(1000, 1000))
+
+        self.gridLayout.addWidget(self.cam, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
         self.parameters = QTabWidget(self.frame_6)
         self.parameters.setObjectName(u"parameters")
         self.parameters.setMaximumSize(QSize(1000, 1000))
@@ -207,18 +213,12 @@ class Ui_MainWindow(object):
         self.filterTab.setObjectName(u"filterTab")
         self.parameters.addTab(self.filterTab, "")
 
-        self.gridLayout.addWidget(self.parameters, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.parameters, 3, 0, 1, 1)
 
         self.verticalLayout_8 = QVBoxLayout()
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
 
-        self.gridLayout.addLayout(self.verticalLayout_8, 3, 0, 1, 1)
-
-        self.cam = QLabel(self.frame_6)
-        self.cam.setObjectName(u"cam")
-        self.cam.setMaximumSize(QSize(1000, 1000))
-
-        self.gridLayout.addWidget(self.cam, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout.addLayout(self.verticalLayout_8, 4, 0, 1, 1)
 
         self.label_6 = QLabel(self.frame_6)
         self.label_6.setObjectName(u"label_6")
@@ -229,7 +229,7 @@ class Ui_MainWindow(object):
         self.label_6.setMouseTracking(False)
         self.label_6.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.gridLayout.addWidget(self.label_6, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_6, 2, 0, 1, 1)
 
 
         self.verticalLayout_5.addWidget(self.frame_6)
@@ -252,7 +252,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"GeneralCV - Laboratorio Robotica UTN Fra", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Select CAM", None))
         self.btnConnect.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
         self.btnScan.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
@@ -260,15 +260,15 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Input Filter", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Output Filter", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Load CV Model", None))
-        self.enableCv.setText(QCoreApplication.translate("MainWindow", u"Enable", None))
+        self.enableCv.setText(QCoreApplication.translate("MainWindow", u"Disable", None))
         self.toolButton_4.setText(QCoreApplication.translate("MainWindow", u"...", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Select Communication", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
-        self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
+        self.btnConnectCom.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
+        self.btnScanCom.setText(QCoreApplication.translate("MainWindow", u"Scan", None))
         self.toolButton_3.setText(QCoreApplication.translate("MainWindow", u"...", None))
+        self.cam.setText(QCoreApplication.translate("MainWindow", u"CAM", None))
         self.parameters.setTabText(self.parameters.indexOf(self.camTab), QCoreApplication.translate("MainWindow", u"Tab 1", None))
         self.parameters.setTabText(self.parameters.indexOf(self.filterTab), QCoreApplication.translate("MainWindow", u"Tab 2", None))
-        self.cam.setText(QCoreApplication.translate("MainWindow", u"CAM", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"LABORATORIO DE ROBOTICA UTN FRA", None))
     # retranslateUi
 

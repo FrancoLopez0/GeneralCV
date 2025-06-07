@@ -10,3 +10,7 @@ class iCom(iBase):
     @abstractmethod
     def recieve(self):
         pass
+
+    @abstractmethod
+    def scan(self):
+        pass

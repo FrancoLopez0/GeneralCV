@@ -13,6 +13,9 @@ class ConsoleCom(iCom):
                 return
         except:
             return
+    
+    def scan(self):
+        return super().scan()
         
     def showInfo(self):
         pass
