@@ -28,6 +28,14 @@ class BaseProvider():
                         "funcion": metodo,
                         "parametros": parametros
                     }
+                if getattr(metodo, '__have_default_values__', False):
+                    print("=============================================")
+                    print("Tiene valores por default")
+                    default_values = getattr(metodo, '__default_values__')
+                    metodos[nombre]["parametros"] |= default_values
+                    print(metodos[nombre])
+                    print("=============================================")
+
             print(f'Estos son los metodos de la clase: {metodos}')
             return metodos
         return False

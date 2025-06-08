@@ -166,7 +166,7 @@ class MainWindow(QMainWindow):
             methods = self.comProvider.getMethods()
 
         ports = self.comProvider.scan()
-        self.update_tab(4, value, methods, 'COM', combo_items=ports)
+        self.update_tab(4, value, methods, 'COM', port=ports)
         #print(methods)
 
     def select_cam(self):

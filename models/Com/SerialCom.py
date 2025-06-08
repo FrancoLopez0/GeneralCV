@@ -14,6 +14,8 @@ class SerialCom(iCom):
         self.ports = []
         self.char_init = 255
         self.char_deinit = 0
+
+        self.scan()
             
     def setBaudRate(self, baud):
         self.badurate = baud
@@ -39,10 +41,10 @@ class SerialCom(iCom):
     #     self.com.write(b"a")
 
     @add_param
-    def connect(self, port: ComboInputType, baudrate: int = 9600):
-        print(f'Conectando..... al puerto: {port}')
+    def connect(self, port: ComboInputType, baudrate: ComboInputType = ["115200", "9600"]):
+        print(f'Conectando..... al puerto: {port} a {int(baudrate)}')
         self.setPort(port)
-        self.com = serial.Serial(port, self.badurate)
+        self.com = serial.Serial(port, int(baudrate))
         pwm = 255
 
         if self.com.is_open:
