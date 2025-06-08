@@ -213,23 +213,12 @@ class Ui_MainWindow(object):
         self.filterTab.setObjectName(u"filterTab")
         self.parameters.addTab(self.filterTab, "")
 
-        self.gridLayout.addWidget(self.parameters, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.parameters, 2, 0, 1, 1)
 
         self.verticalLayout_8 = QVBoxLayout()
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
 
-        self.gridLayout.addLayout(self.verticalLayout_8, 4, 0, 1, 1)
-
-        self.label_6 = QLabel(self.frame_6)
-        self.label_6.setObjectName(u"label_6")
-        font = QFont()
-        font.setFamilies([u"DejaVu Sans Mono"])
-        font.setPointSize(12)
-        self.label_6.setFont(font)
-        self.label_6.setMouseTracking(False)
-        self.label_6.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.gridLayout.addWidget(self.label_6, 2, 0, 1, 1)
+        self.gridLayout.addLayout(self.verticalLayout_8, 3, 0, 1, 1)
 
 
         self.verticalLayout_5.addWidget(self.frame_6)
@@ -269,6 +258,5 @@ class Ui_MainWindow(object):
         self.cam.setText(QCoreApplication.translate("MainWindow", u"CAM", None))
         self.parameters.setTabText(self.parameters.indexOf(self.camTab), QCoreApplication.translate("MainWindow", u"Tab 1", None))
         self.parameters.setTabText(self.parameters.indexOf(self.filterTab), QCoreApplication.translate("MainWindow", u"Tab 2", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"LABORATORIO DE ROBOTICA UTN FRA", None))
     # retranslateUi
 
