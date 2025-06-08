@@ -239,7 +239,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <widget class="QTabWidget" name="parameters">
          <property name="maximumSize">
           <size>
@@ -262,27 +262,8 @@
          </widget>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="3" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_8"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <family>DejaVu Sans Mono</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="mouseTracking">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>LABORATORIO DE ROBOTICA UTN FRA</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

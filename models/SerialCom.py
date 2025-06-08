@@ -54,3 +54,11 @@ class SerialCom(iCom):
     def close(self):
         print(f'Cerrando puerto: {self.port}')
         self.com.close()
+
+# if __name__ == "__main__":
+#     print("Escanenado puertos....")
+#     rawPorts = list(list_ports.comports())
+#     self.ports = []
+#         for port in rawPorts:
+#             print(f"Puerto: {port.device}, Descripción: {port.description}, GUID: {port.hwid}")
+#             self.ports.append(port.device)

@@ -4,87 +4,25 @@
 # pyside6-uic .\ui_files\mainwindow.ui -o .\views\view_main_window.py
 # pyside6-designer .\ui_files\mainwindow.ui      
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout, QComboBox
-from PySide6.QtCore import QTimer, Qt
-from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
+from PySide6.QtCore import QTimer
+from PySide6.QtGui import QImage, QPixmap, QIcon
 from views.view_main_window import Ui_MainWindow
 from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv, CannyFilter, SerialCom
-from models.types import ComboInputType
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
+from widgets import MyCustomTab
 import cv2_enumerate_cameras 
 import cv2
-
-class MyCustomTab(QWidget):
-    def __init__(self, methods, name, **kwargs):
-        super().__init__()
-        
-        h = 25
-
-        layout = QHBoxLayout()
-
-        layout.addWidget(QLabel(name), alignment=Qt.AlignCenter)
-
-        for method in methods:
-            params = [param for param in methods[method]['parametros']]
-            inputs = {}
-            func_layout = QVBoxLayout()
-            for param, param_type in methods[method]['parametros'].items():
-                param_layout = QHBoxLayout()
-
-                label = QLabel(param)
-
-                label.setFixedHeight(h)
-
-                param_layout.addWidget(label, alignment=Qt.AlignCenter)
-
-                if(param_type == str):
-                    var_widget=QLineEdit(param)
-                if(param_type == float):
-                    var_widget = QDoubleSpinBox(maximum=1000)
-                if(param_type == int):
-                    var_widget = QSpinBox(maximum=1000)
-                if(param_type == ComboInputType):
-                    var_widget = QComboBox()
-                    var_widget.addItems(kwargs.get('combo_items'))
-                inputs[param] = var_widget
-
-                param_layout.addWidget(var_widget, alignment=Qt.AlignCenter)
-
-                func_layout.addLayout(param_layout)
-            
-            layout.addLayout(func_layout)
-
-            btn = QPushButton(method)
-
-            btn.setFixedHeight(h)
-
-            fun = self.make_callback(methods[method]['funcion'], inputs)
-
-            btn.clicked.connect(fun)
-
-            layout.addWidget(btn, alignment=Qt.AlignCenter)   
-        
-        layout.addStretch()         
-
-        self.setLayout(layout)
-
-    def make_callback(self, func, inputs):
-        def callback():
-            args = {}
-            for k, widget in inputs.items():
-                if isinstance(widget, QLineEdit):
-                    args[k] = widget.text()
-                if isinstance(widget, QComboBox):
-                    args[k] = widget.currentText()
-                else:
-                    args[k] = widget.value()
-            func(**args)
-        return callback
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("GeneralCV")
+        image = QImage()
+        image.load("./assets/lab.jpg")
+        icon = QIcon()
+        icon.addPixmap(QPixmap.fromImage(image))
+        self.setWindowIcon(icon)
 
         self.ui = Ui_MainWindow()
 
@@ -171,7 +109,7 @@ class MainWindow(QMainWindow):
         # LISTA LAS CAMARAS DEL SISTEMA
         for camera in cameras:
             if camera.index < 1400:
-                print(camera.name)
+                #print(camera.name)
                 list_cameras.append(camera.name)
 
         self.ui.cbSelectCam.clear()
@@ -186,7 +124,7 @@ class MainWindow(QMainWindow):
         methods = self.inputFilterProvider.getMethods()
         self.update_tab(1, value, methods, 'iFilter')
         
-        print(value)
+        #print(value)
 
     def select_com(self, value):
         
@@ -197,7 +135,7 @@ class MainWindow(QMainWindow):
 
         methods = self.comProvider.getMethods()
         self.update_tab(4, value, methods, 'COM', combo_items=ports)
-        print(methods)
+        #print(methods)
 
     def select_cam(self):
         index = self.ui.cbSelectCam.currentIndex()
@@ -216,7 +154,7 @@ class MainWindow(QMainWindow):
         methods = self.outputFilterProvider.getMethods()
         self.update_tab(3, value, methods, 'OFilter')
 
-        print(value)
+        #print(value)
 
     def select_cv_model(self, value):
         
@@ -228,7 +166,7 @@ class MainWindow(QMainWindow):
         if(value=='Hand Tracking'):
             self.cvProvider.setCv(HandTrackingCv())
 
-        print(f'Modelo seleccionado: {value}')
+        #print(f'Modelo seleccionado: {value}')
 
         methods = self.cvProvider.getMethods()
 
@@ -239,6 +177,7 @@ class MainWindow(QMainWindow):
         tab = MyCustomTab(methods, name, **kwargs)
         self.ui.parameters.removeTab(index)
         self.ui.parameters.insertTab(index,tab, tab_name)
+        self.ui.parameters.setCurrentIndex(index)
 
     def show_on_qt(self, frame):
         h, w, ch = frame.shape
