@@ -1,4 +1,4 @@
-from .interfaces import iScreen
+from ..interfaces import iScreen
 import cv2
 
 class OpenCvScreen(iScreen):

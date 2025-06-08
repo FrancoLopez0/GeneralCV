@@ -1,4 +1,4 @@
-from .interfaces import iCom
+from ..interfaces import iCom
 
 class ConsoleCom(iCom):
     def __init__(self, text=''):
@@ -13,6 +13,9 @@ class ConsoleCom(iCom):
                 return
         except:
             return
+    
+    def scan(self):
+        return super().scan()
         
     def showInfo(self):
         pass

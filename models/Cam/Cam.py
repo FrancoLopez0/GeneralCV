@@ -1,5 +1,5 @@
-from .interfaces import iCam
-import numpy as np
+from ..interfaces import iCam
+from ..decorators import add_param
 import cv2
 
 class Cam(iCam):
@@ -7,6 +7,8 @@ class Cam(iCam):
         super().__init__()
 
         self.cap = cv2.VideoCapture(camNumber)
+
+        self.flip = True
     
     def getFrame(self):
 
@@ -16,7 +18,12 @@ class Cam(iCam):
             print("Error: Can't recieve frame...")
             return TypeError
         else:
+            frame = cv2.flip(frame, 1) if self.flip else frame
             return frame
+    
+    @add_param
+    def flipFrame(self):
+        self.flip = not self.flip
     
     def getParameters(self):
         return super().getParameters()

@@ -1,4 +1,4 @@
-from .interfaces import iFilter
+from ..interfaces import iFilter
 
 class BypassFilter(iFilter):
     def __init__(self):

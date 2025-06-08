@@ -1,6 +1,6 @@
-from .interfaces import iFilter
+from ..interfaces import iFilter
 import cv2
-from .decorators import add_param
+from ..decorators import add_param
 
 class CannyFilter(iFilter):
     def __init__(self):
