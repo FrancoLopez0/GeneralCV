@@ -1,6 +1,6 @@
-from models import HandsCv
+from .HandsCv import HandsCv
 import cv2
-from .decorators import add_param
+from ..decorators import add_param
 
 class HandTrackingCv(HandsCv):
     def __init__(self):

@@ -1,5 +1,5 @@
-from .interfaces import iCam
-from .decorators import add_param
+from ..interfaces import iCam
+from ..decorators import add_param
 import cv2
 
 class Cam(iCam):

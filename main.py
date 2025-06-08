@@ -8,11 +8,18 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QImage, QPixmap, QIcon
 from views.view_main_window import Ui_MainWindow
-from models import Cam, OpenCvScreen, BypassFilter, ConsoleCom, HandsCv, QtScreen, HandTrackingCv, CannyFilter, SerialCom
+import importlib
+from models import *
 from controllers import CamProvider, ScreenProvider, CvProvider, FilterProvider, ComProvider
 from widgets import MyCustomTab
 import cv2_enumerate_cameras 
 import cv2
+import os
+
+models_cam = [f.replace(".py", "") for f in os.listdir("./models/Cam") if os.path.isfile(os.path.join("./models/Cam", f))][:-1]
+models_com = [f.replace(".py", "") for f in os.listdir("./models/Com") if os.path.isfile(os.path.join("./models/Com", f))][:-1]
+models_cv = [f.replace(".py", "") for f in os.listdir("./models/Cv") if os.path.isfile(os.path.join("./models/Cv", f))][:-1]
+models_filter = [f.replace(".py", "") for f in os.listdir("./models/Filter") if os.path.isfile(os.path.join("./models/Filter", f))][:-1]
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -23,6 +30,13 @@ class MainWindow(QMainWindow):
         icon = QIcon()
         icon.addPixmap(QPixmap.fromImage(image))
         self.setWindowIcon(icon)
+
+        print("=====================MODELOS IMORTADOS===========================")
+        print(models_cam) 
+        print(models_cv )
+        print(models_com)
+        print(models_filter)
+        print("=================================================================")
 
         self.ui = Ui_MainWindow()
 
@@ -46,18 +60,18 @@ class MainWindow(QMainWindow):
 
         self.ui.parameters.removeTab(0)
 
-        self.ui.cbSelectModel.addItems(['None','Hand', 'Hand Tracking'])
+        self.ui.cbSelectModel.addItems(['None']+models_cv)
         self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
 
-        self.ui.cbSelectOuputFilter.addItems(['None', 'Canny'])
+        self.ui.cbSelectOuputFilter.addItems(['None']+models_filter)
         self.ui.cbSelectOuputFilter.currentTextChanged.connect(self.select_output_filter_model)
 
-        self.ui.cbSelectInputFilter.addItems(['None', 'Canny'])
+        self.ui.cbSelectInputFilter.addItems(['None']+models_filter)
         self.ui.cbSelectInputFilter.currentTextChanged.connect(self.select_input_filter_model)
 
         self.ui.cbSelectCam.currentTextChanged.connect(self.select_cam)
 
-        self.ui.cbSelectCom.addItems(['None', 'Serial'])
+        self.ui.cbSelectCom.addItems(['None']+models_com)
         self.ui.cbSelectCom.currentTextChanged.connect(self.select_com)
 
         self.ui.btnScan.clicked.connect(self.list_cameras)
@@ -102,6 +116,9 @@ class MainWindow(QMainWindow):
         self.cvProvider.toggleActive()
         self.ui.enableCv.setText('Disable' if self.cvProvider.isActive else 'Enable')
 
+    '''
+        Lista las camaras
+    '''
     def list_cameras(self):  
         cameras = cv2_enumerate_cameras.enumerate_cameras()
         list_cameras = []
@@ -115,11 +132,22 @@ class MainWindow(QMainWindow):
         self.ui.cbSelectCam.clear()
         self.ui.cbSelectCam.addItems(list_cameras)
 
+
+    '''
+        Importa un modelo que se encuentre en la carpeta models
+    '''
+    def import_model(self, class_name, provider):
+        module = importlib.import_module(f"models")
+        model = getattr(module, class_name)
+        provider.setModel(model())
+        return 
+
     def select_input_filter_model(self, value):
+
         if(value == 'None'):
             self.inputFilterProvider.setFilter(BypassFilter())
-        if(value=='Canny'):
-            self.inputFilterProvider.setFilter(CannyFilter())
+        else:
+            self.import_model(value, self.inputFilterProvider)
         
         methods = self.inputFilterProvider.getMethods()
         self.update_tab(1, value, methods, 'iFilter')
@@ -127,13 +155,17 @@ class MainWindow(QMainWindow):
         #print(value)
 
     def select_com(self, value):
-        
-        if(value=='Serial'):
-            self.comProvider.setCom(SerialCom())
-        
-        ports = self.comProvider.scan()
 
-        methods = self.comProvider.getMethods()
+        self.comProvider.close()
+
+        if(value == 'None'):
+            methods = {}
+        else:
+            self.import_model(value, self.comProvider)
+        
+            methods = self.comProvider.getMethods()
+
+        ports = self.comProvider.scan()
         self.update_tab(4, value, methods, 'COM', combo_items=ports)
         #print(methods)
 
@@ -148,11 +180,11 @@ class MainWindow(QMainWindow):
 
         if(value == 'None'):
             self.outputFilterProvider.setFilter(BypassFilter())
-        if(value=='Canny'):
-            self.outputFilterProvider.setFilter(CannyFilter())
+        else:
+            self.import_model(value, self.outputFilterProvider)
         
         methods = self.outputFilterProvider.getMethods()
-        self.update_tab(3, value, methods, 'OFilter')
+        self.update_tab(3, value, methods, 'oFilter')
 
         #print(value)
 
@@ -160,25 +192,27 @@ class MainWindow(QMainWindow):
         
         self.cvProvider.close()
 
-        if(value=='Hand'):
-            self.cvProvider.setCv(HandsCv())
+        if(value == 'None'):
+            methods = {}
+        else:
+            self.import_model(value, self.cvProvider)
         
-        if(value=='Hand Tracking'):
-            self.cvProvider.setCv(HandTrackingCv())
-
-        #print(f'Modelo seleccionado: {value}')
-
-        methods = self.cvProvider.getMethods()
+            methods = self.comProvider.getMethods()
 
         self.update_tab(2, value, methods, 'CV')
 
-
+    '''
+        Actualiza la tab donde se encuentran los parametros
+    '''
     def update_tab(self, index, name, methods, tab_name, **kwargs):
         tab = MyCustomTab(methods, name, **kwargs)
         self.ui.parameters.removeTab(index)
         self.ui.parameters.insertTab(index,tab, tab_name)
         self.ui.parameters.setCurrentIndex(index)
 
+    '''
+        Muestra el frame en Qt
+    '''
     def show_on_qt(self, frame):
         h, w, ch = frame.shape
         bytes_per_line = ch * w
@@ -186,6 +220,9 @@ class MainWindow(QMainWindow):
         # Mostrar la imagen en el QLabel
         self.ui.cam.setPixmap(QPixmap.fromImage(q_image))
 
+    '''
+        Actualiza el frame
+    '''
     def update_frame(self):
         
         frame = self.camProvider.getFrame()                         # Tomo un frame
@@ -202,9 +239,13 @@ class MainWindow(QMainWindow):
 
         self.screenProvider.showFrame(frame)
     
+    '''
+        Libera los recursos
+    '''
     def close(self):
         self.cvProvider.close()  
         self.cam.realese()                            # Libero el recurso de camara
+        self.comProvider.close()
         return super().close()
 
 if __name__ == "__main__":

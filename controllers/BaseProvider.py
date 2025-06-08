@@ -8,6 +8,9 @@ class BaseProvider():
     def getModel(self):
         return self.model
     
+    def setModel(self, new):
+        self.model = new
+    
     def toggleActive(self):
         self.isActive = not self.isActive
 

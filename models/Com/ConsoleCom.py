@@ -1,4 +1,4 @@
-from .interfaces import iCom
+from ..interfaces import iCom
 
 class ConsoleCom(iCom):
     def __init__(self, text=''):

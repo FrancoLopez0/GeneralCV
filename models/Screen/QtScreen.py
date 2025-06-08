@@ -1,4 +1,4 @@
-from .interfaces import iScreen
+from ..interfaces import iScreen
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QDoubleSpinBox, QSpinBox, QLineEdit, QWidget, QVBoxLayout, QTabWidget, QLabel, QPushButton
         

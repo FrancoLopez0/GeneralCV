@@ -1,8 +1,8 @@
-from .interfaces import iCv
+from ..interfaces import iCv
 import mediapipe as mp
 import cv2
 from dataclasses import dataclass
-from .decorators import add_param
+from ..decorators import add_param
 
 @dataclass
 class Hand:

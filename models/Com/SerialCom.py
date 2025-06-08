@@ -1,8 +1,8 @@
-from .interfaces import iCom
+from ..interfaces import iCom
 from models.types import ComboInputType
 import serial
 import serial.tools.list_ports as list_ports
-from .decorators import add_param
+from ..decorators import add_param
 
 class SerialCom(iCom):
     def __init__(self):
@@ -12,6 +12,8 @@ class SerialCom(iCom):
         self.badurate = 9600
         self.com = None
         self.ports = []
+        self.char_init = 255
+        self.char_deinit = 0
             
     def setBaudRate(self, baud):
         self.badurate = baud
@@ -31,14 +33,23 @@ class SerialCom(iCom):
     def showInfo(self):
         return super().showInfo()
     
-    def connect(self):
-        self.com = serial.Serial(self.port, self.badurate)
+    # @add_param
+    # def connect(self):
+    #     self.com = serial.Serial(self.port, self.badurate)
+    #     self.com.write(b"a")
 
     @add_param
-    def selectPort(self, port: ComboInputType):
+    def connect(self, port: ComboInputType, baudrate: int = 9600):
         print(f'Conectando..... al puerto: {port}')
         self.setPort(port)
         self.com = serial.Serial(port, self.badurate)
+        pwm = 255
+
+        if self.com.is_open:
+            print("CONECTADO")
+            self.com.write(pwm.to_bytes())
+        else:
+            print("Error de conexion")
         return 
 
     def scan(self):
@@ -53,7 +64,15 @@ class SerialCom(iCom):
     @add_param
     def close(self):
         print(f'Cerrando puerto: {self.port}')
-        self.com.close()
+        pwm = 0
+
+        if self.com.is_open:
+            self.com.write(pwm.to_bytes())
+            self.com.close()
+            print("Desconectado")
+        else:
+            pass
+        return 
 
 # if __name__ == "__main__":
 #     print("Escanenado puertos....")
