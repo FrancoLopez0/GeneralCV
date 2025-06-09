@@ -26,11 +26,15 @@ class HandTrackingCv(HandsCv):
 
                 cv2.circle(frame, reference, 4, (0,255,0), 2)
                 cv2.line(frame, reference, index_tip, self.line_color, 2)
+                
+                
+
                 cv2.putText(frame,f'[{index_tip[0]-reference[0]},{index_tip[1]-reference[1]}]',index_tip,0,1,(0,255,0),2)
+                return frame, self.main_hand.fingers_coords['index']
         except:
             pass
-        
-        return frame, self.main_hand.fingers_coords
+        return frame, [0,0]
+        # return frame, self.main_hand.fingers_coords
 
     @add_param
     def set_line_color(self, r:int, g:int, b:int):

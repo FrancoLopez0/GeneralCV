@@ -49,14 +49,16 @@ class HandsCv(iCv):
 
             # Obtengo la primer mano
             hand = results.multi_hand_landmarks[-1]
+
+            digits = 2
             
             # Guardo todas las coordenadas de los dedos de la mano principal
             self.main_hand.fingers_coords = {
-                'thumb':[hand.landmark[self.mp_hands.HandLandmark.THUMB_TIP].x,hand.landmark[self.mp_hands.HandLandmark.THUMB_TIP].y],
-                'index':[hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP].x,hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP].y],
-                'middle':[hand.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x,hand.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y],
-                'ring':[hand.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP].x,hand.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP].y],
-                'pinky':[hand.landmark[self.mp_hands.HandLandmark.PINKY_TIP].x,hand.landmark[self.mp_hands.HandLandmark.PINKY_TIP].y],
+                'thumb':[round(hand.landmark[self.mp_hands.HandLandmark.THUMB_TIP].x, digits),round(hand.landmark[self.mp_hands.HandLandmark.THUMB_TIP].y, digits)],
+                'index':[round(hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP].x, digits),round(hand.landmark[self.mp_hands.HandLandmark.INDEX_FINGER_TIP].y, digits)],
+                'middle':[round(hand.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x, digits),round(hand.landmark[self.mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y, digits)],
+                'ring':[round(hand.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP].x, digits),round(hand.landmark[self.mp_hands.HandLandmark.RING_FINGER_TIP].y, digits)],
+                'pinky':[round(hand.landmark[self.mp_hands.HandLandmark.PINKY_TIP].x, digits),round(hand.landmark[self.mp_hands.HandLandmark.PINKY_TIP].y, digits)],
                 }
             
             self.main_hand.center = {

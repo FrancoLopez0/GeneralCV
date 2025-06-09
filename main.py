@@ -1,10 +1,6 @@
-# This Python file uses the following encoding: utf-8
-# pyside6-uic .\ui_files\mainwindow.ui -o view_main_window.py
-# pyside6-uic .\ui_files\main.ui > view_main_window.py
-# pyside6-uic .\ui_files\mainwindow.ui -o .\views\view_main_window.py
-# pyside6-designer .\ui_files\mainwindow.ui      
+from pygrabber.dshow_graph import FilterGraph
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPlainTextEdit
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QImage, QPixmap, QIcon
 from views.view_main_window import Ui_MainWindow
@@ -57,8 +53,12 @@ class MainWindow(QMainWindow):
         self.ui.parameters.addTab(self.cvWidget, 'CV')
         self.ui.parameters.addTab(self.oFilterWidget, 'OFilter')
         self.ui.parameters.addTab(self.comWidget, 'COM')
-
+        
         self.ui.parameters.removeTab(0)
+
+        self.console = QLabel("Hola")
+
+        self.ui.parameters.addTab(self.console, 'Console')
 
         self.ui.cbSelectModel.addItems(['None']+models_cv)
         self.ui.cbSelectModel.currentTextChanged.connect(self.select_cv_model)
@@ -123,15 +123,17 @@ class MainWindow(QMainWindow):
         cameras = cv2_enumerate_cameras.enumerate_cameras()
         list_cameras = []
 
-        # LISTA LAS CAMARAS DEL SISTEMA
-        for camera in cameras:
-            if camera.index < 1400:
-                #print(camera.name)
-                list_cameras.append(camera.name)
+        print("=====================CAMARAS============================")
+        graph = FilterGraph()
+        camaras = graph.get_input_devices()
+        for i, cam in enumerate(camaras):
+            list_cameras.append(f"{i}: {cam}")
+            print(f"{i}: {cam}")
+        print("========================================================")
+
 
         self.ui.cbSelectCam.clear()
         self.ui.cbSelectCam.addItems(list_cameras)
-
 
     '''
         Importa un modelo que se encuentre en la carpeta models
@@ -152,7 +154,6 @@ class MainWindow(QMainWindow):
         methods = self.inputFilterProvider.getMethods()
         self.update_tab(1, value, methods, 'iFilter')
         
-        #print(value)
 
     def select_com(self, value):
 
@@ -167,7 +168,6 @@ class MainWindow(QMainWindow):
 
         ports = self.comProvider.scan()
         self.update_tab(4, value, methods, 'COM', port=ports)
-        #print(methods)
 
     def select_cam(self):
         index = self.ui.cbSelectCam.currentIndex()
@@ -176,6 +176,9 @@ class MainWindow(QMainWindow):
         methods = self.camProvider.getMethods()
         self.update_tab(0, '', methods, 'CAM')
 
+    '''
+        Selecciona el filtro a la salida
+    '''
     def select_output_filter_model(self, value):
 
         if(value == 'None'):
@@ -186,8 +189,9 @@ class MainWindow(QMainWindow):
         methods = self.outputFilterProvider.getMethods()
         self.update_tab(3, value, methods, 'oFilter')
 
-        #print(value)
-
+    '''
+        Selecciona el modelo de computer vision
+    '''
     def select_cv_model(self, value):
         
         self.cvProvider.close()
@@ -220,6 +224,17 @@ class MainWindow(QMainWindow):
         # Mostrar la imagen en el QLabel
         self.ui.cam.setPixmap(QPixmap.fromImage(q_image))
 
+    def print_gui_console(self, res):
+        if res:
+            try:
+                if isinstance(res, object):
+                    r = ""
+                    for key, value in vars(res).items():
+                        r += f'{key}: {value} \n'
+                    self.console.setText(r)
+            except:
+                self.console.setText(str(res))
+
     '''
         Actualiza el frame
     '''
@@ -230,8 +245,10 @@ class MainWindow(QMainWindow):
         frameToCvProcess = self.inputFilterProvider.process(frame)  # Aplico un filtro a mi frame para luego procesarlo
         
         frame,cvResponse = self.cvProvider.process(frameToCvProcess)# Proceso el frame
+
+        self.print_gui_console(cvResponse)
         
-        # self.comProvider.process(frame)                             # Comunico la respuesta a un periferico externo
+        self.comProvider.process(cvResponse)                        # Comunico la respuesta a un periferico externo
         
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 

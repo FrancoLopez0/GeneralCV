@@ -8,6 +8,8 @@ class CannyFilter(iFilter):
 
         self.th0 = 100
         self.th1 = 200
+
+        self.invert = False
     
     def getParameters(self):
         return super().getParameters()
@@ -16,7 +18,11 @@ class CannyFilter(iFilter):
         return super().showInfo()
     
     @add_param
-    def setThresholds(self, th0:int, th1:int):
+    def invertColors(self):
+        self.invert = not self.invert
+
+    @add_param
+    def setThresholds(self, th0:int = 100, th1:int = 100):
         max = 255
         if(th0>0 and th0<max):
             self.th0 = th0
@@ -25,5 +31,11 @@ class CannyFilter(iFilter):
 
     def process(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        return cv2.Canny(gray, self.th0, self.th1)
+
+        frame = cv2.Canny(gray, self.th0, self.th1)
+
+        if self.invert:
+            return cv2.bitwise_not(frame)
+
+        return frame
     
