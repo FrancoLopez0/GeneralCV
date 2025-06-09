@@ -36,6 +36,5 @@ class BaseProvider():
                     print(metodos[nombre])
                     print("=============================================")
 
-            print(f'Estos son los metodos de la clase: {metodos}')
             return metodos
         return False

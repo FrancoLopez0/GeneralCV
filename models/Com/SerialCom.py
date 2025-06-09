@@ -29,27 +29,23 @@ class SerialCom(iCom):
     def recieve(self):
         return super().recieve()
     
-    def send(self):
+    def send(self, value):
+        self.com.write(value)
         return super().send()
     
     def showInfo(self):
         return super().showInfo()
     
-    # @add_param
-    # def connect(self):
-    #     self.com = serial.Serial(self.port, self.badurate)
-    #     self.com.write(b"a")
+    def process(self, cvResponse):
+        return
 
     @add_param
-    def connect(self, port: ComboInputType, baudrate: ComboInputType = ["115200", "9600"]):
+    def connect(self, port: ComboInputType, baudrate: ComboInputType = ["9600", "115200"]):
         print(f'Conectando..... al puerto: {port} a {int(baudrate)}')
         self.setPort(port)
         self.com = serial.Serial(port, int(baudrate))
-        pwm = 255
-
         if self.com.is_open:
             print("CONECTADO")
-            self.com.write(pwm.to_bytes())
         else:
             print("Error de conexion")
         return 

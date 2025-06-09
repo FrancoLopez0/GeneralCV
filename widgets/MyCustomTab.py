@@ -54,7 +54,7 @@ class MyCustomTab(QWidget):
                         var_widget.addItems(default_values[param])
                     except:
                         var_widget.addItems(kwargs.get(param))
-                        
+
                 else:
                     var_widget = QLabel("Tipo no soportado")
 
@@ -84,6 +84,7 @@ class MyCustomTab(QWidget):
                 if isinstance(widget, QComboBox):
                     args[k] = widget.currentText()
                 else:
-                    args[k] = widget.value()
+                    # args[k] = widget.value()
+                    print(type(widget))
             func(**args)
         return callback
