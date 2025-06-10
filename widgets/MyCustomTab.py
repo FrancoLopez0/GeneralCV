@@ -1,5 +1,5 @@
-from models.types import ComboInputType
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout, QComboBox
+from models.types import ComboInputType, SliderInputType
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout, QComboBox, QSlider
 from PySide6.QtCore import QTimer, Qt
 import inspect
 
@@ -48,6 +48,10 @@ class MyCustomTab(QWidget):
 
                     if param in default_values:
                         var_widget.setValue(int(default_values[param]))
+                elif param_type == SliderInputType:
+                    var_widget = QSlider(Qt.Horizontal)
+                    if param in default_values:
+                        var_widget.setValue(int(default_values[param]))
                 elif param_type == ComboInputType:
                     var_widget = QComboBox()
                     try:
@@ -84,7 +88,6 @@ class MyCustomTab(QWidget):
                 if isinstance(widget, QComboBox):
                     args[k] = widget.currentText()
                 else:
-                    # args[k] = widget.value()
-                    print(type(widget))
+                    args[k] = widget.value()
             func(**args)
         return callback
