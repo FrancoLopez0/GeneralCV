@@ -22,10 +22,12 @@ class CamProvider(BaseProvider.BaseProvider):
             return ValueError
 
     def realease(self):
-        try:
-            self.model.realese()
-        except:
-            pass
+        if self.model != None:
+            try:
+                self.model.realese()
+            except:
+                pass
+
 
     # def loop(self):
 

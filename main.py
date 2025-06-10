@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         icon.addPixmap(QPixmap.fromImage(image))
         self.setWindowIcon(icon)
 
-        print("=====================MODELOS IMORTADOS===========================")
+        print("=====================MODELOS IMPORTADOS===========================")
         print(models_cam) 
         print(models_cv )
         print(models_com)
@@ -174,10 +174,13 @@ class MainWindow(QMainWindow):
 
     def select_cam(self):
         index = self.ui.cbSelectCam.currentIndex()
-        self.camProvider.realease()
-        self.camProvider.setCam(Cam(index))
-        methods = self.camProvider.getMethods()
-        self.update_tab(0, '', methods, 'CAM')
+        try:
+            self.camProvider.realease()
+            self.camProvider.setCam(Cam(index))
+            methods = self.camProvider.getMethods()
+            self.update_tab(0, '', methods, 'CAM')
+        except:
+            pass
 
     '''
         Selecciona el filtro a la salida
@@ -273,7 +276,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     win = MainWindow()
     win.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 # if __name__ == "__main__":
 
