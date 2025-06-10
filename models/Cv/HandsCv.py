@@ -48,6 +48,7 @@ class HandsCv(iCv):
     def process(self, frame):
         results = self.hands.process(frame)
         h, w, ch = frame.shape
+
         if results.multi_hand_landmarks is not None:
 
             # Obtengo la primer mano

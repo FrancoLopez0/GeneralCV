@@ -9,7 +9,12 @@ class Settings(BaseSettings):
     )
 
     HANDS_MODEL_MIN_CONFIDENCE: float
-    HANDS_MODEL_MAX_NUM_HANDS: int = 4
+    HANDS_MODEL_MAX_NUM_HANDS: int 
+    GAUSSIAN_FILTER_W_KERNEL_DEFAULT: int
+    GAUSSIAN_FILTER_H_KERNEL_DEFAULT: int
+    SQR_HAND_TRACKING_W: int
+    SQR_HAND_TRACKING_MAX_W: int
+    
 
 
 settings = Settings()

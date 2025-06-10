@@ -3,10 +3,12 @@ from ..decorators import add_param
 from models.types import ComboInputType
 import cv2
 
+from settings import settings
+
 class GaussianFilter(iFilter):
     def __init__(self):
         super().__init__()
-        self.kernel = (5,5)
+        self.kernel = (settings.GAUSSIAN_FILTER_W_KERNEL_DEFAULT,settings.GAUSSIAN_FILTER_H_KERNEL_DEFAULT)
         pass
     
     def getParameters(self):
@@ -16,7 +18,7 @@ class GaussianFilter(iFilter):
         return super().showInfo()
 
     @add_param
-    def setKernel(self, w_kernel:int=5, h_kernel:int=5):
+    def setKernel(self, w_kernel:int=settings.GAUSSIAN_FILTER_W_KERNEL_DEFAULT, h_kernel:int=settings.GAUSSIAN_FILTER_H_KERNEL_DEFAULT):
         self.kernel = (w_kernel, h_kernel)
         return
 
