@@ -16,13 +16,16 @@ class Cam(iCam):
 
         self.lut = np.array([np.clip(i , 0, 255) for i in range(256)], dtype=np.uint8)
 
-        self.alpha_max = 100
+        self.alpha_max = 10
         self.beta_max = 200
     
     @add_param
     def setLut(self, alpha:SliderInputType = 1, beta:SliderInputType = 0):
 
+        if alpha == 0:
+            alpha = 1
         alpha = (alpha / 100) * self.alpha_max
+        
         beta = (beta / 100) * self.beta_max
 
         self.lut = np.array([np.clip(alpha * i + beta, 0, 255) for i in range(256)], dtype=np.uint8)
