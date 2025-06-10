@@ -6,7 +6,9 @@ Este programa utiliza Qt como medidador con el usuario.
 
 Para actualizar el GUI se debe utilizar el comando:
 
-`pyside6-uic .\ui_files\mainwindow.ui -o .\views\view_main_window.py`
+```
+pyside6-uic .\ui_files\mainwindow.ui -o .\views\view_main_window.py
+```
 
 # Modelos
 
@@ -39,14 +41,18 @@ Se pueden añadir modelos y automaticamente se importaran en el programa, para e
 ## Añadir parametros al menú
 Se pueden modificar los parametros en tiempo real a traves del decorador @add_param 
 
+### Botones
 ```
   @add_param
   def printStates(self):
       print(self.main_hand.fingers_state)
 ```
 
-![image](https://github.com/user-attachments/assets/eda23751-04d2-45d6-9098-1c9f67eada4a)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/eda23751-04d2-45d6-9098-1c9f67eada4a" alt="Imagen del resultado" width="300"/>
+</div>
 
+### Inputs
 
 En el caso que se requieran inputs se deben aclarar los tipos de dato de la siguiente manera
 
@@ -55,13 +61,15 @@ En el caso que se requieran inputs se deben aclarar los tipos de dato de la sigu
   def set_line_color(self, r:int, g:int, b:int):
       self.line_color = (b,g,r)
 ```
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/357c7317-fde2-4e5d-8931-0a82a3cfada4" alt="Imagen del resultado" width="300"/>
+</div>
 
-![image](https://github.com/user-attachments/assets/357c7317-fde2-4e5d-8931-0a82a3cfada4)
-
+### Combo box
 En los casos que se requiere que el input tome datos de un combobox se debe utilizar el siguiente tipo
 ```
   @add_param
-  def connect(self, port: ComboInputType, baudrate: ComboInputType = ["115200", "9600"]):
+  def connect(self, port: ComboInputType, baudrate: ComboInputType = ["9600", "115200"]):
       print(f'Conectando..... al puerto: {port} a {int(baudrate)}')
       self.setPort(port)
       self.com = serial.Serial(port, int(baudrate))
@@ -71,6 +79,26 @@ En los casos que se requiere que el input tome datos de un combobox se debe util
           print("Error de conexion")
       return 
 ```
+
+<div align="center">
+  <img src="images/combo_example.png" alt="Imagen del resultado" width="300"/>
+</div>
+
+
+### Slider
+Para los casos en los que se requiera un slider se debera utilizar el tipo SliderInputType. El mismo retornara un int de 0 a 100, el cual luego debe ser procesado.
+
+```
+  @add_param
+  def setLut(self, alpha:SliderInputType = 1, beta:SliderInputType = 0):
+      alpha = (alpha / 100) * self.alpha_max
+      beta = (beta / 100) * self.beta_max
+      self.lut = np.array([np.clip(alpha * i + beta, 0, 255) for i in range(256)], dtype=np.uint8)
+```
+
+<div align="center">
+  <img src="images/slider_example.png" alt="Imagen del resultado" width="300"/>
+</div>
 
 Este proyecto utiliza Qt (PySide6) bajo licencia LGPL v3 para la interfaz gráfica de usuario.
 Para más información sobre la licencia, ver: https://doc.qt.io/qtforpython/licenses.html
