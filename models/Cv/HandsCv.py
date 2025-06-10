@@ -30,8 +30,9 @@ class HandsCv(iCv):
 
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
-            max_num_hands=20,
-            min_detection_confidence=0.8)
+            max_num_hands=1,
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5)
         
         self.main_hand = Hand(0, [0,0,0,0,0], {}, {})
 
