@@ -4,6 +4,8 @@ import cv2
 from dataclasses import dataclass
 from ..decorators import add_param
 
+from settings import settings
+
 @dataclass
 class Hand:
     index: int
@@ -30,9 +32,9 @@ class HandsCv(iCv):
 
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
-            max_num_hands=1,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5)
+            max_num_hands=settings.HANDS_MODEL_MAX_NUM_HANDS,
+            min_detection_confidence=settings.HANDS_MODEL_MIN_CONFIDENCE
+        )
         
         self.main_hand = Hand(0, [0,0,0,0,0], {}, {})
 
