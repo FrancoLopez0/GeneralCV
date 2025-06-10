@@ -84,7 +84,7 @@ class MyCustomTab(QWidget):
                 if isinstance(widget, QComboBox):
                     args[k] = widget.currentText()
                 else:
-                    # args[k] = widget.value()
+                    args[k] = widget.value()
                     print(type(widget))
             func(**args)
         return callback

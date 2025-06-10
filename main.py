@@ -112,6 +112,9 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)
 
+        methods = self.camProvider.getMethods()
+        self.update_tab(0, '', methods, 'CAM')
+
     def enable_cv(self):
         self.cvProvider.toggleActive()
         self.ui.enableCv.setText('Disable' if self.cvProvider.isActive else 'Enable')
@@ -201,7 +204,8 @@ class MainWindow(QMainWindow):
         else:
             self.import_model(value, self.cvProvider)
         
-            methods = self.comProvider.getMethods()
+            methods = self.cvProvider.getMethods()
+            print(methods)
 
         self.update_tab(2, value, methods, 'CV')
 

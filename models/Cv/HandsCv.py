@@ -84,7 +84,9 @@ class HandsCv(iCv):
                 self.main_hand.fingers_state = [None for finger in self.main_hand.fingers_state]
             
             cv2.putText(frame,f'Ubicacion de mano ({int(self.main_hand.center['x'] * w)},{int(self.main_hand.center['y'] * h)})',(60,60),0,0.6,(0,255,0),2)
-        return frame, self.main_hand
+            return frame, self.main_hand
+        else:
+            return frame, False
     
     @add_param
     def printStates(self):
