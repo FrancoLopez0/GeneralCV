@@ -30,9 +30,9 @@ class CannyFilter(iFilter):
             self.th1 = th1
 
     def process(self, frame):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        frame = cv2.Canny(gray, self.th0, self.th1)
+        frame = cv2.Canny(frame, self.th0, self.th1)
 
         if self.invert:
             return cv2.bitwise_not(frame)
