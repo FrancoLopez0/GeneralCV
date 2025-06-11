@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     GAUSSIAN_FILTER_H_KERNEL_DEFAULT: int
     SQR_HAND_TRACKING_W: int
     SQR_HAND_TRACKING_MAX_W: int
-    
-
+    FULL_EXTEND_FINGER_NUMBER_DEFAULT: float
+    FULL_CLOSED_FINGER_NUMBER_DEFAULT: float    
+    IS_FRONT_NUMBER: float
 
 settings = Settings()

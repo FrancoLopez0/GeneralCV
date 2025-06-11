@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
         
         self.ui.parameters.removeTab(0)
 
-        self.console = QLabel("Hola")
+        self.console = QLabel("")
 
         self.ui.parameters.addTab(self.console, 'Console')
 

@@ -46,13 +46,13 @@ class HandsCv(iCv):
         return super().getParameters()
 
     def process(self, frame):
-        results = self.hands.process(frame)
+        self.results = self.hands.process(frame)
         h, w, ch = frame.shape
 
-        if results.multi_hand_landmarks is not None:
+        if self.results.multi_hand_landmarks is not None:
 
             # Obtengo la primer mano
-            hand = results.multi_hand_landmarks[-1]
+            hand = self.results.multi_hand_landmarks[-1]
 
             digits = 2
             
@@ -71,7 +71,7 @@ class HandsCv(iCv):
             }
 
             # Recorro todas las manos
-            for hand_landmarks in results.multi_hand_landmarks: 
+            for hand_landmarks in self.results.multi_hand_landmarks: 
                 self.mp_drawing.draw_landmarks(
                     frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS,
                     self.mp_drawing.DrawingSpec(color=(0,60,255), thickness=1, circle_radius=1),
@@ -87,7 +87,7 @@ class HandsCv(iCv):
             else:
                 self.main_hand.fingers_state = [None for finger in self.main_hand.fingers_state]
             
-            cv2.putText(frame,f'Ubicacion de mano ({int(self.main_hand.center['x'] * w)},{int(self.main_hand.center['y'] * h)})',(60,60),0,0.6,(0,255,0),2)
+            # cv2.putText(frame,f'Ubicacion de mano ({int(self.main_hand.center['x'] * w)},{int(self.main_hand.center['y'] * h)})',(60,60),0,0.6,(0,255,0),2)
             return frame, self.main_hand
         else:
             return frame, False
