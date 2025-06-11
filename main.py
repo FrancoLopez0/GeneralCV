@@ -255,6 +255,10 @@ class MainWindow(QMainWindow):
 
         self.print_gui_console(cvResponse)
         
+        # print(cvResponse)
+
+        # print(self.comProvider.getModel())
+
         self.comProvider.process(cvResponse)                        # Comunico la respuesta a un periferico externo
         
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

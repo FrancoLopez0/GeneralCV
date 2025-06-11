@@ -19,7 +19,7 @@ class ComProvider(BaseProvider.BaseProvider):
             return
     
     def process(self, cvResponse):
-        if self.model != None and self.isActive:
+        if self.model != None :
             self.model.process(cvResponse)
         else:
             return False

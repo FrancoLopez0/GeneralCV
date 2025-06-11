@@ -30,13 +30,27 @@ class SerialCom(iCom):
         return super().recieve()
     
     def send(self, value):
-        self.com.write(value)
+        try:
+            print(int(value*255))
+            self.com.write(int(value*255))
+        except:
+            pass
         return super().send()
     
     def showInfo(self):
         return super().showInfo()
     
     def process(self, cvResponse):
+        # try:
+        # print(cvResponse)
+        try:
+            if cvResponse:
+                self.send(cvResponse)
+        except:
+            pass
+        # except:
+        #     pass
+        # self.send = cvResponse.fingers_state[1]
         return
 
     @add_param
