@@ -253,7 +253,7 @@ class MainWindow(QMainWindow):
         
         frame,cvResponse = self.cvProvider.process(frameToCvProcess)# Proceso el frame
 
-        self.print_gui_console(cvResponse)
+        # self.print_gui_console(cvResponse)
         
         # print(cvResponse)
 

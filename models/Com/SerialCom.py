@@ -3,6 +3,24 @@ from models.types import ComboInputType
 import serial
 import serial.tools.list_ports as list_ports
 from ..decorators import add_param
+import struct
+
+def send_angles(ser, angles):
+    # Empaquetar datos: inicio (0xFF), ángulos (cada uno como 2 bytes), checksum, fin (0xFE)
+    packet = bytearray()
+    packet.append(0xFF)  # Byte de inicio
+    
+    checksum = 0xFF
+    for angle in angles:
+        angle_bytes = struct.pack('>H', angle)  # 2 bytes (big-endian)
+        packet.extend(angle_bytes)
+        checksum ^= angle_bytes[0]  # XOR para checksum
+        checksum ^= angle_bytes[1]
+    
+    packet.append(checksum)
+    packet.append(0xFE)  # Byte de fin
+    
+    ser.write(packet)  # Enviar el paquete
 
 class SerialCom(iCom):
     def __init__(self):
@@ -29,10 +47,14 @@ class SerialCom(iCom):
     def recieve(self):
         return super().recieve()
     
-    def send(self, value):
+    def send(self, values):
         try:
-            print(int(value*255))
-            self.com.write(int(value*255))
+            print(int(values*180))
+
+            send_angles(self.com, [90,int(values*180),100,50,20])  # Enviar el valor como un ángulo entre 0 y 180
+            # line = self.com.readline().decode('utf-8')
+            # print(line)
+            # self.com.write(int(value*255))
         except:
             pass
         return super().send()
