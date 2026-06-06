@@ -8,7 +8,7 @@ class ConsoleCom(iCom):
     def process(self, cvResponse):
         try:
             if cvResponse:
-                # print(cvResponse)
+                print(cvResponse)
                 pass
             else:
                 return

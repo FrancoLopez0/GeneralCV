@@ -27,7 +27,7 @@ class SerialCom(iCom):
         super().__init__()
         
         self.port = None
-        self.badurate = 9600
+        self.badurate = 115200
         self.com = None
         self.ports = []
         self.char_init = 255
@@ -48,15 +48,34 @@ class SerialCom(iCom):
         return super().recieve()
     
     def send(self, values):
-        try:
-            print(int(values*180))
+        if not self.com or not self.com.is_open:
+            return super().send()
 
-            send_angles(self.com, [90,int(values*180),100,50,20])  # Enviar el valor como un ángulo entre 0 y 180
-            # line = self.com.readline().decode('utf-8')
-            # print(line)
-            # self.com.write(int(value*255))
-        except:
-            pass
+        try:
+            packet = bytearray()
+            packet.append(0xFF)  # Byte de inicio
+            
+            checksum = 0xFF
+            for val in values:
+                # Limitamos entre 0.0 y 1.0 por si el modelo tira algún valor basura
+                v = max(0.0, min(1.0, float(val)))
+                
+                # Empaquetar como float de 4 bytes (big-endian)
+                float_bytes = struct.pack('>f', v)
+                packet.extend(float_bytes)
+                
+                # XOR para checksum con los 4 bytes
+                for b in float_bytes:
+                    checksum ^= b
+            
+            packet.append(checksum)
+            packet.append(0xFE)  # Byte de fin
+            
+            self.com.write(packet)
+            
+        except Exception as e:
+            print(f"Error empaquetando/enviando serial: {e}")
+            
         return super().send()
     
     def showInfo(self):

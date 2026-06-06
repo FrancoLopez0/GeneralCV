@@ -63,7 +63,7 @@ class FingersTrackingCv(HandsCv):
                     cv2.line(frame, (40 + c, self.frame_h - 20), (40 + c, int(self.frame_h - 100 * finger_state)), (5,200,10), 10)
                     c += 20
                 
-                return frame, self.main_hand.fingers_state[1]
+                return frame, [self.main_hand.fingers_state[1],self.main_hand.fingers_state[2],self.main_hand.fingers_state[3],self.main_hand.fingers_state[4]]
             return frame, False
             # except:
             #     pass
