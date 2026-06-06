@@ -6,7 +6,7 @@ import requests
 import time
 
 class ServoTrackingCom(iCom):
-    def __init__(self, server_url = "http://192.168.1.54:81/"):
+    def __init__(self, server_url = "http://192.168.1.54/"):
         super().__init__()
 
         self.server_url = server_url
