@@ -58,7 +58,7 @@ class HandTrackingCv(HandsCv):
                 
                 cv2.putText(frame,f'[{index_tip[0]-reference[0]},{index_tip[1]-reference[1]}]',index_tip,0,1,(0,255,0),2)
 
-                return frame, self.main_hand
+                return frame, self.main_han
         except:
             pass
         return frame, response

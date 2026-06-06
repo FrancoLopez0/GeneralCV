@@ -4,6 +4,7 @@ from ..types import ComboInputType, SliderInputType
 import cv2
 import numpy as np
 
+
 class Cam(iCam):
     def __init__(self, camNumber = 0):
         super().__init__()
@@ -35,7 +36,7 @@ class Cam(iCam):
         self.lut = np.array([np.clip(i , 0, 255) for i in range(256)], dtype=np.uint8)
 
     def getFrame(self):
-
+        
         ret, frame = self.cap.read()
 
         if not ret:

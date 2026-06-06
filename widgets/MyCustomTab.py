@@ -85,7 +85,7 @@ class MyCustomTab(QWidget):
             for k, widget in inputs.items():
                 if isinstance(widget, QLineEdit):
                     args[k] = widget.text()
-                if isinstance(widget, QComboBox):
+                elif isinstance(widget, QComboBox):
                     args[k] = widget.currentText()
                 else:
                     args[k] = widget.value()

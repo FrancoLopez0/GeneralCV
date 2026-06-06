@@ -134,6 +134,8 @@ class MainWindow(QMainWindow):
             print(f"{i}: {cam}")
         print("========================================================")
 
+        self.esp32_cam_str = "Esp32_cam"
+        list_cameras.append(self.esp32_cam_str)
 
         self.ui.cbSelectCam.clear()
         self.ui.cbSelectCam.addItems(list_cameras)
@@ -176,7 +178,11 @@ class MainWindow(QMainWindow):
         index = self.ui.cbSelectCam.currentIndex()
         try:
             self.camProvider.realease()
-            self.camProvider.setCam(Cam(index))
+            if(self.ui.cbSelectCam.currentText() == self.esp32_cam_str):
+                self.camProvider.setCam(Esp32_cam())
+            else:
+                self.camProvider.setCam(Cam(index)) 
+
             methods = self.camProvider.getMethods()
             self.update_tab(0, '', methods, 'CAM')
         except:
@@ -222,7 +228,7 @@ class MainWindow(QMainWindow):
         self.ui.parameters.setCurrentIndex(index)
 
     '''
-        Muestra el frame en Qt
+        Muestra el frame en Qtz
     '''
     def show_on_qt(self, frame):
         h, w, ch = frame.shape
