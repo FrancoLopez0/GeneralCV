@@ -3,7 +3,6 @@ import numpy as np
 import requests
 from ..decorators import add_param
 from ..interfaces import iCam
-from ..types import ComboInputType, SliderInputType
 from enum import StrEnum
 import time
 import threading
@@ -13,7 +12,7 @@ class ReqStatus(StrEnum):
      disconnected = "FALSE"
 
 class Esp32_cam(iCam):
-    def __init__(self, server_url="http://192.168.1.54/"):
+    def __init__(self, server_url="http://192.168.1.87/"):
         super().__init__()
         if server_url.startswith("://"):
             self.server_url = "http" + server_url
@@ -23,7 +22,9 @@ class Esp32_cam(iCam):
             self.server_url = server_url
         self.status = ReqStatus.disconnected
         self.current_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+        # self.current_frame = np.zeros((320, 240, 3), dtype=np.uint8)
         self._running = True
+        self.cap = None
         
         try:
             self.make_ping()
@@ -39,16 +40,17 @@ class Esp32_cam(iCam):
             stream_url = base_url if base_url.endswith("stream") else f"{base_url}/stream"
 
             try:
-                cap = cv2.VideoCapture(stream_url)
-                if cap.isOpened():
+                self.cap = cv2.VideoCapture(stream_url)
+                if self.cap.isOpened():
                     self.status = ReqStatus.connected
                     while self._running:
-                        ret, frame = cap.read()
+                        ret, frame = self.cap.read()
                         if ret and frame is not None:
                             self.current_frame = frame
                         else:
                             break
-                cap.release()
+                if self.cap is not None:
+                    self.cap.release()
             except Exception as e:
                 if self._running:
                     print(f"Stream capture error: {e}")
@@ -64,7 +66,7 @@ class Esp32_cam(iCam):
     def make_ping(self):
         try:
             url = self.server_url if self.server_url.endswith("/") else self.server_url + "/"
-            response = requests.get(url + "ping", timeout=2)
+            response = requests.get("http://192.168.1.87/" + "ping", timeout=2)
             if response.text == ReqStatus.connected:
                 self.status = ReqStatus.connected
                 print(f"Ping exitoso, Estado: {self.status}")
@@ -98,6 +100,3 @@ class Esp32_cam(iCam):
         self._running = False
         if hasattr(self, 'thread') and self.thread.is_alive():
             self.thread.join(timeout=1.0)
-
-    def realese(self):
-        self.release()

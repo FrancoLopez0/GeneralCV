@@ -1,5 +1,5 @@
 from models.types import ComboInputType, SliderInputType
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout, QComboBox, QSlider
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QDoubleSpinBox, QSpinBox, QHBoxLayout, QComboBox, QSlider, QCheckBox
 from PySide6.QtCore import QTimer, Qt
 import inspect
 
@@ -59,6 +59,11 @@ class MyCustomTab(QWidget):
                     except:
                         var_widget.addItems(kwargs.get(param))
 
+                elif param_type == bool:
+                    var_widget = QCheckBox()
+                    if param in default_values:
+                        var_widget.setChecked(bool(default_values[param]))
+
                 else:
                     var_widget = QLabel("Tipo no soportado")
 
@@ -85,9 +90,13 @@ class MyCustomTab(QWidget):
             for k, widget in inputs.items():
                 if isinstance(widget, QLineEdit):
                     args[k] = widget.text()
+                elif isinstance(widget, QCheckBox):
+                    args[k] = widget.isChecked()
                 elif isinstance(widget, QComboBox):
                     args[k] = widget.currentText()
-                else:
+                elif isinstance(widget, (QSpinBox, QSlider, QDoubleSpinBox)):
                     args[k] = widget.value()
+                else:
+                    args[k] = None
             func(**args)
         return callback

@@ -6,7 +6,7 @@ import requests
 import time
 
 class ServoTrackingCom(iCom):
-    def __init__(self, server_url = "http://192.168.1.54/"):
+    def __init__(self, server_url = "http://192.168.1.87:81/"):
         super().__init__()
 
         self.server_url = server_url
@@ -27,13 +27,17 @@ class ServoTrackingCom(iCom):
         self.target_lock = threading.Lock()
         self.target_event = threading.Event()
 
+        self._running = True
         self.worker_thread = threading.Thread(target=self._send_worker, daemon=True)
         self.worker_thread.start()
 
     def _send_worker(self):
-        while True:
+        while self._running:
             self.target_event.wait()
             self.target_event.clear()
+
+            if not self._running:
+                break
 
             with self.target_lock:
                 if self.latest_target is None:
@@ -44,12 +48,25 @@ class ServoTrackingCom(iCom):
             try:
                 # Ensure the url ends with /relative
                 base_url = self.server_url.rstrip('/')
-                url = f"{base_url}/relative?pan={values['pan']}&tilt={values['tilt']}"
+                url = f"{base_url}/relative?x={values['pan']}&y={values['tilt']}"
                 requests.get(url, timeout=1.0)
             except requests.exceptions.RequestException as e:
                 print(f"HTTP request failed: {e}")
 
             time.sleep(self.delay_ms / 1000.0)
+
+    @add_param
+    def force_reconnect(self, trigger: bool = False):
+        if trigger:
+            print("Forcing reconnection of Servo tracking...")
+            self._running = False
+            self.target_event.set()
+            if hasattr(self, 'worker_thread') and self.worker_thread.is_alive():
+                self.worker_thread.join(timeout=1.0)
+            
+            self._running = True
+            self.worker_thread = threading.Thread(target=self._send_worker, daemon=True)
+            self.worker_thread.start()
 
     def process(self, cvResponse):
         # try:

@@ -9,7 +9,7 @@ class TrackingRobot(iCom):
         super().__init__()
         self.coords = []
         self.ref = []
-        self.ip_url = "http://192.168.1.100"
+        self.ip_url = "http://192.168.1.87"
         
         self.send_queue = queue.Queue(maxsize=5)
         self.thread = threading.Thread(target=self._http_worker, daemon=True)
@@ -29,7 +29,7 @@ class TrackingRobot(iCom):
             if cvResponse and hasattr(cvResponse, 'center'):
                 x = cvResponse.center.get('x', 0)
                 y = cvResponse.center.get('y', 0)
-                print(f"Raw coordinates: X={x}, Y={y}")
+                print(f"Raw coordinates: X={x}, Y={-y}")
                                     
                 # Math mapping: 640x480 resolution to 0-180 servo angles
                 # x goes from 0-640 -> 0-180
