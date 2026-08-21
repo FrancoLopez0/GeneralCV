@@ -21,8 +21,8 @@ class Esp32_cam(iCam):
         else:
             self.server_url = server_url
         self.status = ReqStatus.disconnected
-        self.current_frame = np.zeros((480, 640, 3), dtype=np.uint8)
-        # self.current_frame = np.zeros((320, 240, 3), dtype=np.uint8)
+        self.current_frame = np.zeros((320, 480, 3), dtype=np.uint8) # 320 filas (altura) x 480 columnas (anchura)
+        # self.current_frame = np.zeros((240, 320, 3), dtype=np.uint8)
         self._running = True
         self.cap = None
         
@@ -86,6 +86,17 @@ class Esp32_cam(iCam):
             self.server_url = "http://" + url
         else:
             self.server_url = url
+            
+    @add_param
+    def connect_camera(self):
+        """Fuerza la reconexión al URL actual cerrando el stream anterior si existe."""
+        print(f"Forzando conexión a: {self.server_url}")
+        if hasattr(self, 'cap') and self.cap is not None:
+            try:
+                self.cap.release()
+            except Exception:
+                pass
+        self.status = ReqStatus.disconnected
 
     def getParameters(self):
         return super().getParameters()

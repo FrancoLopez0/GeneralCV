@@ -11,8 +11,8 @@ class ServoTrackingCom(iCom):
 
         self.server_url = server_url
 
-        self.frame_width = 640
-        self.frame_height = 480
+        self.frame_width = 480
+        self.frame_height = 320
 
         # Factor de velocidad/suavidad (Kp - Ganancia proporcional)
         # Un valor más alto hace que se mueva más rápido pero puede temblar.

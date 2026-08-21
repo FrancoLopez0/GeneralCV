@@ -86,3 +86,6 @@ CMakeLists.txt.user*
 
 ._pycache_
 .qtcreator
+.venv_312/
+.venv_1/
+venv312
