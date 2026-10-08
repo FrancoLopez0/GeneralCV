@@ -6,10 +6,11 @@ import requests
 import time
 
 class ServoTrackingCom(iCom):
-    def __init__(self, server_url = "http://192.168.1.87:81/"):
+    def __init__(self, server_url = "http://10.49.188.117:81/"):
         super().__init__()
 
         self.server_url = server_url
+        self.session = requests.Session()
 
         self.frame_width = 480
         self.frame_height = 320
@@ -49,12 +50,33 @@ class ServoTrackingCom(iCom):
                 # Ensure the url ends with /relative
                 base_url = self.server_url.rstrip('/')
                 url = f"{base_url}/relative?x={values['pan']}&y={values['tilt']}"
+                
+                # --- NUEVO CODIGO (Medicion de Latencia + Session) ---
+                start_req = time.perf_counter()
+                self.session.get(url, timeout=1.0)
+                end_req = time.perf_counter()
+                print(f"[ServoTrackingCom] LATENCIA - Envio Comando HTTP al ESP32: {(end_req - start_req) * 1000:.1f} ms")
+                
+                ''' # ANTERIORMENTE ESTABA ASI:
                 requests.get(url, timeout=1.0)
+                '''
+                # -------------------------------------------
+                
             except requests.exceptions.RequestException as e:
                 print(f"HTTP request failed: {e}")
 
+            # --- NUEVO CODIGO (Delay Dinamico) ---
+            # Si el motor tiene que moverse mucho (ej: 10 grados), físicamente tarda más.
+            # Le sumamos 15ms de espera extra por cada grado que se mueva.
+            # Esto evita que Python pida un segundo movimiento antes de que termine el primero.
+            max_move = max(abs(values['pan']), abs(values['tilt']))
+            dynamic_delay = self.delay_ms + (max_move * 15)
+            time.sleep(dynamic_delay / 1000.0)
+            
+            ''' # ANTERIORMENTE ESTABA ASI:
             time.sleep(self.delay_ms / 1000.0)
-
+            '''
+            # -------------------------------------------
     @add_param
     def force_reconnect(self, trigger: bool = False):
         if trigger:

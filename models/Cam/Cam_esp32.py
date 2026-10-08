@@ -12,7 +12,7 @@ class ReqStatus(StrEnum):
      disconnected = "FALSE"
 
 class Esp32_cam(iCam):
-    def __init__(self, server_url="http://192.168.1.87/"):
+    def __init__(self, server_url="http://10.49.188.117/"):
         super().__init__()
         if server_url.startswith("://"):
             self.server_url = "http" + server_url
@@ -41,10 +41,24 @@ class Esp32_cam(iCam):
 
             try:
                 self.cap = cv2.VideoCapture(stream_url)
+                
+                # --- NUEVO CODIGO (Fijar buffer de OpenCV a 2) ---
+                # Lo subimos a 2 para absorber micro-cortes de red y mejorar la fluidez visual
+                # sin volver al problema de pasarse de largo.
+                self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
+                # -------------------------------------------------
+
                 if self.cap.isOpened():
                     self.status = ReqStatus.connected
                     while self._running:
+                        import time # Import temporal
+                        start_read = time.perf_counter()
+                        
                         ret, frame = self.cap.read()
+                        
+                        end_read = time.perf_counter()
+                        print(f"[Cam_esp32] LATENCIA - Recepcion + Decode OpenCV: {(end_read - start_read) * 1000:.1f} ms")
+                        
                         if ret and frame is not None:
                             self.current_frame = frame
                         else:
@@ -66,7 +80,7 @@ class Esp32_cam(iCam):
     def make_ping(self):
         try:
             url = self.server_url if self.server_url.endswith("/") else self.server_url + "/"
-            response = requests.get("http://192.168.1.87/" + "ping", timeout=2)
+            response = requests.get("http://10.49.188.117/" + "ping", timeout=2)
             if response.text == ReqStatus.connected:
                 self.status = ReqStatus.connected
                 print(f"Ping exitoso, Estado: {self.status}")

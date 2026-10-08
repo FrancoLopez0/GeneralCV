@@ -24,7 +24,17 @@ class HandTrackingCv(HandsCv):
         self.rectange_w = int((w/100) * self.frame_h/2)
 
     def process(self, frame):
+        import time
+        # --- NUEVO CODIGO (Medicion de Latencia) ---
+        start_cv = time.perf_counter()
         frame,response = super().process(frame)
+        end_cv = time.perf_counter()
+        print(f"[HandTrackingCv] LATENCIA - Inferencia IA Mediapipe: {(end_cv - start_cv) * 1000:.1f} ms")
+        
+        ''' # ANTERIORMENTE ESTABA ASI:
+        frame,response = super().process(frame)
+        '''
+        # -------------------------------------------
 
         self.frame_h, self.frame_w, _= frame.shape
 
